@@ -1,8 +1,9 @@
+FROM docker.io/library/alpine:3.21 AS builder
+
 ARG TARGETPLATFORM
 ARG VERSION
 ARG CHANNEL
 
-FROM docker.io/library/alpine:3.21 AS builder
 ADD https://github.com/merbanan/rtl_433/archive/${VERSION}.tar.gz /tmp/rtl_433.tar.gz
 
 RUN apk add --no-cache --update cmake build-base librtlsdr-dev libusb-dev bash
@@ -11,9 +12,6 @@ RUN tar -zxvf /tmp/rtl_433.tar.gz --strip-components=1
 RUN mkdir out && cd out && cmake .. && make -j$(nproc) && make install
 
 FROM docker.io/library/python:3.12-alpine
-ARG TARGETPLATFORM
-ARG VERSION
-ARG CHANNEL
 
 RUN \
     apk add --no-cache --update \
@@ -25,14 +23,14 @@ RUN \
     && \
     pip install paho-mqtt \
     && \
-    adduser -D -H user -G usb
+    adduser -D -H rtl433 -G usb
 
 COPY --from=builder /usr/local/bin/rtl_433 /app/rtl_433
 COPY --from=builder /build/examples/rtl_433_mqtt_hass.py /app/rtl_433_mqtt_hass.py
 
 COPY ./apps/rtl_433/entrypoint.sh /entrypoint.sh
 
-USER user:nogroup
+USER rtl433:nogroup
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]
 

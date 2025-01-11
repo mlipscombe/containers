@@ -18,6 +18,7 @@ RUN \
     libusb \
     librtlsdr \
     catatonit \
+    bash \
     && \
     pip install paho-mqtt
 

@@ -16,7 +16,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility" \
     PLEX_MEDIA_SERVER_HOME="/usr/lib/plexmediaserver" \
     PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS="6" \
     PLEX_MEDIA_SERVER_INFO_VENDOR="Docker" \
-    PLEX_MEDIA_SERVER_INFO_DEVICE="Docker Container (onedr0p)"
+    PLEX_MEDIA_SERVER_INFO_DEVICE="Docker Container (mlipscombe)"
 
 USER root
 WORKDIR /app
@@ -26,20 +26,20 @@ RUN \
     apt-get update \
     && \
     apt-get install -y --no-install-recommends --no-install-suggests \
-        bash \
-        ca-certificates \
-        catatonit \
-        coreutils \
-        curl \
-        jo \
-        jq \
-        nano \
-        tzdata \
-        uuid-runtime \
-        xmlstarlet \
+    bash \
+    ca-certificates \
+    catatonit \
+    coreutils \
+    curl \
+    jo \
+    jq \
+    nano \
+    tzdata \
+    uuid-runtime \
+    xmlstarlet \
     && \
     curl -fsSL -o /tmp/plex.deb \
-        "https://downloads.plex.tv/plex-media-server-new/${VERSION}/debian/plexmediaserver_${VERSION}_${TARGETARCH}.deb" \
+    "https://downloads.plex.tv/plex-media-server-new/${VERSION}/debian/plexmediaserver_${VERSION}_${TARGETARCH}.deb" \
     && \
     dpkg -i --force-confold /tmp/plex.deb \
     && chmod -R 755 "${PLEX_MEDIA_SERVER_HOME}" \

@@ -11,7 +11,7 @@ WORKDIR /build
 RUN tar -zxvf /tmp/rtl_433.tar.gz --strip-components=1
 RUN mkdir out && cd out && cmake .. && make -j$(nproc) && make install
 
-FROM docker.io/library/python:3.12-alpine
+FROM docker.io/library/python:3.13-alpine
 
 RUN \
     apk add --no-cache --update \

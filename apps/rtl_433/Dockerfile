@@ -18,14 +18,8 @@ RUN \
     libusb \
     librtlsdr \
     catatonit \
-    eudev \
-    hwids \
     && \
-    echo 'blacklist dvb_usb_rtl28xxu' > /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf \
-    && \
-    pip install paho-mqtt \
-    && \
-    adduser -D -H rtl433 -G usb
+    pip install paho-mqtt
 
 COPY --from=builder /usr/local/bin/rtl_433 /app/rtl_433
 COPY --from=builder /build/examples/rtl_433_mqtt_hass.py /app/rtl_433_mqtt_hass.py
@@ -33,7 +27,7 @@ COPY --from=builder /etc/udev/rules.d/rtl-sdr.rules /etc/udev/rules.d/rtl-sdr.ru
 
 COPY ./apps/rtl_433/entrypoint.sh /entrypoint.sh
 
-USER rtl433:nogroup
+USER nobody:nogroup
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]
 

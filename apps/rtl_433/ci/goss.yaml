@@ -1,0 +1,7 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goss-org/goss/master/docs/schema.yaml
+file:
+  /app/rtl_433_mqtt_hass.py:
+    exists: true
+  /app/rtl_433:
+    exists: true

@@ -23,7 +23,6 @@ RUN \
 
 COPY --from=builder /usr/local/bin/rtl_433 /app/rtl_433
 COPY --from=builder /build/examples/rtl_433_mqtt_hass.py /app/rtl_433_mqtt_hass.py
-COPY --from=builder /etc/udev/rules.d/rtl-sdr.rules /etc/udev/rules.d/rtl-sdr.rules
 
 COPY ./apps/rtl_433/entrypoint.sh /entrypoint.sh
 

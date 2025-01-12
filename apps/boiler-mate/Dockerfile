@@ -4,11 +4,11 @@ ARG TARGETPLATFORM
 ARG VERSION
 ARG CHANNEL
 
-ADD https://github.com/mlipscombe/boiler-mate/archive/${VERSION}.tar.gz /tmp/boiler-mate.tar.gz
+ADD https://github.com/mlipscombe/boiler-mate/archive/refs/tags/v${VERSION}.tar.gz /tmp/boiler-mate.tar.gz
 
 WORKDIR /build
 RUN tar -zxvf /tmp/boiler-mate.tar.gz --strip-components=1
-ENV CGO_ENABLED 0
+ENV CGO_ENABLED=0
 RUN go mod download
 RUN go build -o boiler-mate
 

@@ -11,7 +11,9 @@ RUN tar -zxvf /tmp/rtl_433.tar.gz --strip-components=1
 
 FROM docker.io/library/python:3.13-alpine
 
-RUN pip install paho-mqtt
+RUN pip install paho-mqtt \
+    && apk add --no-cache --update \
+    catatonit
 
 COPY --from=builder /build/examples/rtl_433_mqtt_hass.py /app/rtl_433_mqtt_hass.py
 

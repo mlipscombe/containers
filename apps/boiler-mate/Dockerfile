@@ -1,4 +1,4 @@
-FROM docker.io/library/alpine:3.21 AS builder
+FROM golang:1.23.4-alpine3.21 AS builder
 
 ARG TARGETPLATFORM
 ARG VERSION
@@ -8,9 +8,18 @@ ADD https://github.com/mlipscombe/boiler-mate/archive/refs/tags/v${VERSION}.tar.
 
 WORKDIR /build
 RUN tar -zxvf /tmp/boiler-mate.tar.gz --strip-components=1
+
 ENV CGO_ENABLED=0
-RUN go mod download
-RUN go build -o boiler-mate
+ENV GOOS=linux
+
+RUN case "${TARGETPLATFORM}" in \
+    'linux/amd64') export GOARCH='amd64' ;; \
+    'linux/arm64') export GOARCH='arm64' ;; \
+    esac \
+    && \
+    go mod download \
+    && \
+    go build -o boiler-mate
 
 FROM scratch
 

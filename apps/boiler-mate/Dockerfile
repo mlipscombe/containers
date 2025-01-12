@@ -19,7 +19,7 @@ COPY --from=builder /build/boiler-mate /boiler-mate
 USER nobody:nogroup
 WORKDIR /
 EXPOSE 2112
-ENV BOILER_MATE_METRICS "0.0.0.0:2112"
+ENV BOILER_MATE_METRICS="0.0.0.0:2112"
 
 ENTRYPOINT ["/boiler-mate"]
 

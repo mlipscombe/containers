@@ -122,6 +122,8 @@ Container | Channel | Image
 [radarr](https://github.com/mlipscombe/containers/pkgs/container/radarr) | master | ghcr.io/mlipscombe/radarr
 [radarr-develop](https://github.com/mlipscombe/containers/pkgs/container/radarr-develop) | develop | ghcr.io/mlipscombe/radarr-develop
 [radarr-nightly](https://github.com/mlipscombe/containers/pkgs/container/radarr-nightly) | nightly | ghcr.io/mlipscombe/radarr-nightly
+[readarr-develop](https://github.com/mlipscombe/containers/pkgs/container/readarr-develop) | develop | ghcr.io/mlipscombe/readarr-develop
+[readarr-nightly](https://github.com/mlipscombe/containers/pkgs/container/readarr-nightly) | nightly | ghcr.io/mlipscombe/readarr-nightly
 [rtl_433](https://github.com/mlipscombe/containers/pkgs/container/rtl_433) | stable | ghcr.io/mlipscombe/rtl_433
 [rtl_433_mqtt_hass](https://github.com/mlipscombe/containers/pkgs/container/rtl_433_mqtt_hass) | stable | ghcr.io/mlipscombe/rtl_433_mqtt_hass
 [sabnzbd](https://github.com/mlipscombe/containers/pkgs/container/sabnzbd) | stable | ghcr.io/mlipscombe/sabnzbd

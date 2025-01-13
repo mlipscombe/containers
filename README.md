@@ -113,6 +113,9 @@ Container | Channel | Image
 [bazarr](https://github.com/mlipscombe/containers/pkgs/container/bazarr) | stable | ghcr.io/mlipscombe/bazarr
 [home-assistant](https://github.com/mlipscombe/containers/pkgs/container/home-assistant) | stable | ghcr.io/mlipscombe/home-assistant
 [jbops](https://github.com/mlipscombe/containers/pkgs/container/jbops) | stable | ghcr.io/mlipscombe/jbops
+[lidarr](https://github.com/mlipscombe/containers/pkgs/container/lidarr) | master | ghcr.io/mlipscombe/lidarr
+[lidarr-develop](https://github.com/mlipscombe/containers/pkgs/container/lidarr-develop) | develop | ghcr.io/mlipscombe/lidarr-develop
+[lidarr-nightly](https://github.com/mlipscombe/containers/pkgs/container/lidarr-nightly) | nightly | ghcr.io/mlipscombe/lidarr-nightly
 [plex](https://github.com/mlipscombe/containers/pkgs/container/plex) | stable | ghcr.io/mlipscombe/plex
 [postgres-init](https://github.com/mlipscombe/containers/pkgs/container/postgres-init) | stable | ghcr.io/mlipscombe/postgres-init
 [prowlarr](https://github.com/mlipscombe/containers/pkgs/container/prowlarr) | master | ghcr.io/mlipscombe/prowlarr

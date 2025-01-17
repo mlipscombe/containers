@@ -1,6 +1,9 @@
 #!/bin/sh
 #shellcheck disable=SC2086
 
+export HOME="${HOME:-/data}"
+export HF_HUB_CACHE="${HF_HUB_CACHE:-/data/.cache}"
+
 exec \
     /app/bin/python3 -m  wyoming_faster_whisper \
         --uri 'tcp://0.0.0.0:10300' \
@@ -8,5 +11,5 @@ exec \
         --download-dir /data \
         --model "${MODEL:-tiny-int8}" \
         --language "${LANGUAGE:-en}" \
-        --device cuda \
+        --device "${DEVICE:-cpu}" \
         "$@"

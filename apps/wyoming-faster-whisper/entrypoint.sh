@@ -3,6 +3,7 @@
 
 export HOME="${HOME:-/data}"
 export HF_HUB_CACHE="${HF_HUB_CACHE:-/data/.cache}"
+export TEMP="${TEMP:-${HOME}/.temp}"
 
 exec \
     /app/bin/python3 -m  wyoming_faster_whisper \

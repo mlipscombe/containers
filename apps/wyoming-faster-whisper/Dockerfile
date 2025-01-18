@@ -41,7 +41,7 @@ COPY ./apps/wyoming-faster-whisper/entrypoint.sh /entrypoint.sh
 
 USER nobody:nogroup
 
-WORKDIR /data
+WORKDIR /app
 VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]

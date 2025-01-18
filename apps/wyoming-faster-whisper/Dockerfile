@@ -31,7 +31,6 @@ RUN \
     && /app/bin/python3 -m pip install --no-cache-dir torch \
     && \
     /app/bin/python3 -m pip install --no-cache-dir \
-    --extra-index-url https://www.piwheels.org/simple \
     "wyoming-faster-whisper @ https://github.com/rhasspy/wyoming-faster-whisper/archive/refs/tags/v${VERSION}.tar.gz" \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && apt-get autoremove -y \

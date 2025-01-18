@@ -40,6 +40,10 @@ COPY ./apps/wyoming-faster-whisper/entrypoint.sh /entrypoint.sh
 
 USER nobody:nogroup
 
+ENV HOME="/data"
+ENV HF_HUB_CACH="/data/.cache"
+ENV TEMP="/data/.temp"
+
 WORKDIR /app
 VOLUME ["/data"]
 

@@ -13,7 +13,14 @@ from os.path import isfile
 
 repo_owner = os.environ.get('REPO_OWNER', os.environ.get('GITHUB_REPOSITORY_OWNER'))
 
-TESTABLE_PLATFORMS = ["linux/amd64"]
+TESTABLE_PLATFORMS = ["linux/amd64", "linux/arm64"]
+
+DEFAULT_RUNNER = "ubuntu-24.04"
+
+RUNNER_OS = {
+    "linux/amd64": "ubuntu-24.04",
+    "linux/arm64": "ubuntu-24.04-arm",
+}
 
 def load_metadata_file_yaml(file_path):
     with open(file_path, "r") as f:
@@ -121,6 +128,7 @@ def get_image_metadata(subdir, meta, forRelease=False, force=False, channels=Non
             platformToBuild = {}
             platformToBuild["name"] = toBuild["name"]
             platformToBuild["platform"] = platform
+            platformToBuild["runner_os"] = RUNNER_OS.get(platform, DEFAULT_RUNNER)
             platformToBuild["target_os"] = target_os
             platformToBuild["target_arch"] = target_arch
             platformToBuild["version"] = version

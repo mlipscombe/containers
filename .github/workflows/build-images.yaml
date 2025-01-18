@@ -88,7 +88,7 @@ jobs:
   build-platform-images:
     name: Build/Test ${{ matrix.image.name }} (${{ matrix.image.platform }})
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.image.runner_os }}
     if: ${{ toJSON(fromJSON(needs.prepare.outputs.matrices).imagePlatforms) != '[]' && toJSON(fromJSON(needs.prepare.outputs.matrices).imagePlatforms) != '' }}
     strategy:
       fail-fast: false
@@ -137,6 +137,7 @@ jobs:
               echo "image.tests_enabled is empty"
               exit 1
           fi
+
           echo "${{ matrix.image.name }}" | grep -E "[a-zA-Z0-9_\.\-]+" || "Image Name is invalid"
           echo "${{ matrix.image.version }}" | grep -E "[a-zA-Z0-9_\.\-]+" || "Image Version is invalid"
 

@@ -34,17 +34,18 @@ RUN \
     "wyoming-faster-whisper @ https://github.com/rhasspy/wyoming-faster-whisper/archive/refs/tags/v${VERSION}.tar.gz" \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && apt-get autoremove -y \
-    && apt-get clean
+    && apt-get clean \
+    && mkdir -p /data && chown nobody:nogroup -R /data
 
 COPY ./apps/wyoming-faster-whisper/entrypoint.sh /entrypoint.sh
 
 USER nobody:nogroup
 
-ENV HOME="/data"
-ENV HF_HUB_CACH="/data/.cache"
-ENV TEMP="/data/.temp"
+ENV HOME="/config"
+ENV HF_HUB_CACH="/config/.cache"
+ENV TEMP="/config/.temp"
 
-WORKDIR /app
-VOLUME ["/data"]
+WORKDIR /config
+VOLUME ["/config"]
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]

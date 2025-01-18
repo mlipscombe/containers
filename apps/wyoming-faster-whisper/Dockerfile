@@ -35,7 +35,7 @@ RUN \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && apt-get autoremove -y \
     && apt-get clean \
-    && mkdir -p /data && chown nobody:nogroup -R /data
+    && mkdir -p /config && chown nobody:nogroup -R /config
 
 COPY ./apps/wyoming-faster-whisper/entrypoint.sh /entrypoint.sh
 

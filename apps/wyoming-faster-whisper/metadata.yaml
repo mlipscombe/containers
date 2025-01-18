@@ -1,5 +1,5 @@
 ---
-app: wyoming-faster-whipser
+app: wyoming-faster-whisper
 semver: true
 channels:
   - name: stable

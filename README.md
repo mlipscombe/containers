@@ -134,6 +134,7 @@ Container | Channel | Image
 [sonarr-develop](https://github.com/mlipscombe/containers/pkgs/container/sonarr-develop) | develop | ghcr.io/mlipscombe/sonarr-develop
 [tautulli](https://github.com/mlipscombe/containers/pkgs/container/tautulli) | master | ghcr.io/mlipscombe/tautulli
 [volsync](https://github.com/mlipscombe/containers/pkgs/container/volsync) | stable | ghcr.io/mlipscombe/volsync
+[wyoming-faster-whipser](https://github.com/mlipscombe/containers/pkgs/container/wyoming-faster-whipser) | stable | ghcr.io/mlipscombe/wyoming-faster-whipser
 
 
 ## Deprecations

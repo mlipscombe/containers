@@ -1,0 +1,5 @@
+---
+port:
+  # https://github.com/aelsabbahy/goss/issues/149
+  tcp:8080:
+    listening: true

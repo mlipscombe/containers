@@ -26,6 +26,8 @@ RUN rm -rf ${PUBLIC_DIR}/dist
 RUN chown -R nginx:nginx /etc/nginx && chown -R nginx:nginx ${PUBLIC_DIR}
 
 COPY ./apps/tacticalrmm-frontend/entrypoint.sh /docker-entrypoint.d/
+COPY ./apps/tacticalrmm-frontend/files/nginx.conf /etc/nginx/conf.d/default.conf
+
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
 
 USER nginx

@@ -4,8 +4,7 @@ ARG TARGETPLATFORM
 ARG VERSION
 ARG CHANNEL
 
-ENV PUBLIC_DIR /usr/share/nginx/html
-ENV TACTICAL_DIR /opt/tactical
+ENV PUBLIC_DIR=/usr/share/nginx/html
 USER root
 
 RUN deluser --remove-home nginx \
@@ -31,5 +30,4 @@ COPY ./apps/tacticalrmm-frontend/files/nginx.conf /etc/nginx/conf.d/default.conf
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
 
 USER nginx
-
 EXPOSE 8080

@@ -10,7 +10,6 @@ ARG CHANNEL
 # # set env variables
 ENV VIRTUAL_ENV=/opt/venv
 ENV TACTICAL_DIR=/opt/tactical
-ENV TACTICAL_TMP_DIR=/tmp/tactical
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
@@ -38,14 +37,23 @@ FROM python:3.11.8-slim
 # set env variables
 ENV VIRTUAL_ENV=/opt/venv
 ENV TACTICAL_DIR=/opt/tactical
-ENV TACTICAL_TMP_DIR=/tmp/tactical
-ENV TACTICAL_READY_FILE=${TACTICAL_DIR}/tmp/tactical.ready
 ENV TACTICAL_USER=tactical
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 # copy files from repo
-COPY --from=CREATE_VENV_STAGE /build/api/tacticalrmm ${TACTICAL_TMP_DIR}/api
-COPY --from=GET_SCRIPTS_STAGE /community-scripts ${TACTICAL_TMP_DIR}/community-scripts
+COPY --from=CREATE_VENV_STAGE /build/api/tacticalrmm ${TACTICAL_DIR}/api
+COPY --from=GET_SCRIPTS_STAGE /community-scripts ${TACTICAL_DIR}/community-scripts
+
+RUN mkdir -p "${TACTICAL_DIR}/tmp" && \
+    mkdir -p "${TACTICAL_DIR}/certs" && \
+    mkdir -p "${TACTICAL_DIR}/reporting" && \
+    mkdir -p "${TACTICAL_DIR}/reporting/assets" && \
+    touch "${TACTICAL_DIR}/tmp/.initialized" && chown -R 1000:1000 "${TACTICAL_DIR}" && \
+    touch "${TACTICAL_DIR}/certs/.initialized" && chown -R 1000:1000 "${TACTICAL_DIR}/certs" && \
+    touch "${TACTICAL_DIR}/reporting" && chown -R 1000:1000 "${TACTICAL_DIR}/reporting" && \
+    mkdir -p "${TACTICAL_DIR}/api/tacticalrmm/private/exe" && \
+    mkdir -p "${TACTICAL_DIR}/api/tacticalrmm/private/log" && \
+    touch "${TACTICAL_DIR}/api/tacticalrmm/private/log/django_debug.log"
 
 # copy go install from build stage
 COPY --from=CREATE_VENV_STAGE ${VIRTUAL_ENV} ${VIRTUAL_ENV}
@@ -56,7 +64,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends rsync weasyprint && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd -g 1000 "${TACTICAL_USER}" && \
-    useradd -M -d "${TACTICAL_DIR}" -s /bin/bash -u 1000 -g 1000 "${TACTICAL_USER}"
+    useradd -M -d "${TACTICAL_DIR}" -s /bin/bash -u 1000 -g 1000 "${TACTICAL_USER}" && \
+    chown -R 1000:1000 "${TACTICAL_DIR}"
 
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 

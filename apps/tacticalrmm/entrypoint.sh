@@ -13,20 +13,6 @@ set -e
 if [ "$1" = 'tactical-init' ]; then
   echo "Initializing TacticalRMM..."
 
-  # copy container data to volume
-  rsync -a --no-perms --no-owner --delete --exclude "tmp/*" --exclude "certs/*" --exclude="api/tacticalrmm/private/*" --exclude="api/tacticalrmm/local_settings.py" "${TACTICAL_TMP_DIR}/" "${TACTICAL_DIR}/"
-
-  mkdir -p ${TACTICAL_DIR}/tmp
-  mkdir -p ${TACTICAL_DIR}/certs
-  mkdir -p ${TACTICAL_DIR}/reporting
-  mkdir -p ${TACTICAL_DIR}/reporting/assets
-  touch ${TACTICAL_DIR}/tmp/.initialized && chown -R 1000:1000 ${TACTICAL_DIR}
-  touch ${TACTICAL_DIR}/certs/.initialized && chown -R 1000:1000 ${TACTICAL_DIR}/certs
-  touch ${TACTICAL_DIR}/reporting && chown -R 1000:1000 ${TACTICAL_DIR}/reporting
-  mkdir -p ${TACTICAL_DIR}/api/tacticalrmm/private/exe
-  mkdir -p ${TACTICAL_DIR}/api/tacticalrmm/private/log
-  touch ${TACTICAL_DIR}/api/tacticalrmm/private/log/django_debug.log
-
   # run migrations and init scripts
   python manage.py pre_update_tasks
   python manage.py migrate --no-input

@@ -61,7 +61,7 @@ RUN apt-get update && \
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 
 # docker init
-COPY ./apps/tacticalrmm-frontend/entrypoint.sh /
+COPY ./apps/tacticalrmm/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 

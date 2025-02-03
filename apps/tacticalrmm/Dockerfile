@@ -16,13 +16,14 @@ ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 
-COPY api/tacticalrmm/requirements.txt ${TACTICAL_TMP_DIR}/api/requirements.txt
-
+ADD https://github.com/amidaware/tacticalrmm/archive/v${VERSION}.tar.gz /tmp/tacticalrmm.tar.gz
+WORKDIR /build
+RUN tar -zxvf /tmp/tacticalrmm.tar.gz --strip-components=1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc libc6-dev && \
     pip install --upgrade pip && \
     pip install --no-cache-dir setuptools wheel && \
-    pip install --no-cache-dir -r ${TACTICAL_TMP_DIR}/api/requirements.txt
+    pip install --no-cache-dir -r api/tacticalrmm/requirements.txt
 
 # pulls community scripts from git repo
 FROM python:3.11.8-slim AS GET_SCRIPTS_STAGE
@@ -43,7 +44,7 @@ ENV TACTICAL_USER=tactical
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 # copy files from repo
-COPY api/tacticalrmm ${TACTICAL_TMP_DIR}/api
+COPY --from=CREATE_VENV_STAGE /build/api/tacticalrmm ${TACTICAL_TMP_DIR}/api
 COPY --from=GET_SCRIPTS_STAGE /community-scripts ${TACTICAL_TMP_DIR}/community-scripts
 
 # copy go install from build stage

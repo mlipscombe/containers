@@ -54,25 +54,30 @@ if [ "$1" = 'tactical-init' ]; then
   # chown everything to tactical user
   echo "Updating permissions on files"
   chown -R "${PUID}":"${PGID}" "${TACTICAL_DIR}"
+
+  exit 0
 fi
 
 # backend container
 if [ "$1" = 'tactical-backend' ]; then
-  uwsgi ${TACTICAL_DIR}/api/app.ini
+  exec uwsgi ${TACTICAL_DIR}/api/app.ini
 fi
 
 if [ "$1" = 'tactical-celery' ]; then
-  celery -A tacticalrmm worker --autoscale=20,2 -l info
+  exec celery -A tacticalrmm worker --autoscale=20,2 -l info
 fi
 
 if [ "$1" = 'tactical-celerybeat' ]; then
   test -f "${TACTICAL_DIR}/api/celerybeat.pid" && rm "${TACTICAL_DIR}/api/celerybeat.pid"
-  celery -A tacticalrmm beat -l info
+  exec celery -A tacticalrmm beat -l info
 fi
 
 # websocket container
 if [ "$1" = 'tactical-websockets' ]; then
   export DJANGO_SETTINGS_MODULE=tacticalrmm.settings
 
-  uvicorn --host 0.0.0.0 --port 8383 --forwarded-allow-ips='*' tacticalrmm.asgi:application
+  exec uvicorn --host 0.0.0.0 --port 8383 --forwarded-allow-ips='*' tacticalrmm.asgi:application
 fi
+
+echo "Unknown command $1... exiting."
+exit 1

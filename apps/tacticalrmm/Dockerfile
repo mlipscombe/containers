@@ -1,5 +1,5 @@
 # creates python virtual env
-FROM python:3.11.8-slim AS CREATE_VENV_STAGE
+FROM python:3.11.8-slim AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -25,7 +25,7 @@ RUN apt-get update && \
     pip install --no-cache-dir -r api/tacticalrmm/requirements.txt
 
 # pulls community scripts from git repo
-FROM python:3.11.8-slim AS GET_SCRIPTS_STAGE
+FROM python:3.11.8-slim AS scripts
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git && \
@@ -41,8 +41,8 @@ ENV TACTICAL_USER=tactical
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 # copy files from repo
-COPY --from=CREATE_VENV_STAGE /build/api/tacticalrmm ${TACTICAL_DIR}/api
-COPY --from=GET_SCRIPTS_STAGE /community-scripts ${TACTICAL_DIR}/community-scripts
+COPY --from=build /build/api/tacticalrmm ${TACTICAL_DIR}/api
+COPY --from=scripts /community-scripts ${TACTICAL_DIR}/community-scripts
 
 RUN mkdir -p "${TACTICAL_DIR}/tmp" && \
     mkdir -p "${TACTICAL_DIR}/certs" && \
@@ -56,7 +56,7 @@ RUN mkdir -p "${TACTICAL_DIR}/tmp" && \
     touch "${TACTICAL_DIR}/api/tacticalrmm/private/log/django_debug.log"
 
 # copy go install from build stage
-COPY --from=CREATE_VENV_STAGE ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+COPY --from=build ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 # install deps
 RUN apt-get update && \

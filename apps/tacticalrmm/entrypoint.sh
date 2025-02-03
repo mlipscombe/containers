@@ -38,10 +38,6 @@ if [ "$1" = 'tactical-init' ]; then
   echo "Creating dashboard user if it doesn't exist"
   echo "from accounts.models import User; User.objects.create_superuser('${TRMM_USER}', 'admin@example.com', '${TRMM_PASS}') if not User.objects.filter(username='${TRMM_USER}').exists() else 0;" | python manage.py shell
 
-  # chown everything to tactical user
-  echo "Updating permissions on files"
-  chown -R "${PUID}":"${PGID}" "${TACTICAL_DIR}"
-
   exit 0
 fi
 
@@ -66,5 +62,4 @@ if [ "$1" = 'tactical-websockets' ]; then
   exec uvicorn --host 0.0.0.0 --port 8383 --forwarded-allow-ips='*' tacticalrmm.asgi:application
 fi
 
-echo "Unknown command $1... exiting."
-exit 1
+exec $@

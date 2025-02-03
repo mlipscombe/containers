@@ -11,9 +11,10 @@ set -e
 
 # tactical-init
 if [ "$1" = 'tactical-init' ]; then
+  echo "Initializing TacticalRMM..."
 
   # copy container data to volume
-  rsync -a --no-perms --no-owner --delete --exclude "tmp/*" --exclude "certs/*" --exclude="api/tacticalrmm/private/*" "${TACTICAL_TMP_DIR}/" "${TACTICAL_DIR}/"
+  rsync -a --no-perms --no-owner --delete --exclude "tmp/*" --exclude "certs/*" --exclude="api/tacticalrmm/private/*" --exclude="api/tacticalrmm/local_settings.py" "${TACTICAL_TMP_DIR}/" "${TACTICAL_DIR}/"
 
   mkdir -p ${TACTICAL_DIR}/tmp
   mkdir -p ${TACTICAL_DIR}/certs

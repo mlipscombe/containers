@@ -74,8 +74,6 @@ SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 # docker init
 WORKDIR ${TACTICAL_DIR}/api
 
-RUN python manage.py create_uwsgi_conf
-
 COPY ./apps/tacticalrmm/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

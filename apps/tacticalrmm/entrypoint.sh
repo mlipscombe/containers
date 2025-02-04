@@ -13,6 +13,8 @@ set -e
 if [ "$1" = 'tactical-init' ]; then
   echo "Initializing TacticalRMM..."
 
+  rsync -a --no-perms --no-owner --delete --exclude "tmp/*" --exclude "certs/*" --exclude="api/tacticalrmm/private/*" "${TACTICAL_BASE_DIR}/" "${TACTICAL_DIR}/"
+
   # run migrations and init scripts
   python manage.py pre_update_tasks
   python manage.py migrate --no-input

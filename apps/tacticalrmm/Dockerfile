@@ -9,7 +9,7 @@ ARG CHANNEL
 
 # # set env variables
 ENV VIRTUAL_ENV=/opt/venv
-ENV TACTICAL_DIR=/opt/tactical
+ENV TACTICAL_BASE_DIR=/opt/tactical-base
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
@@ -36,24 +36,26 @@ FROM python:3.11.8-slim
 
 # set env variables
 ENV VIRTUAL_ENV=/opt/venv
+ENV TACTICAL_BASE_DIR=/opt/tactical-base
 ENV TACTICAL_DIR=/opt/tactical
 ENV TACTICAL_USER=tactical
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 # copy files from repo
-COPY --from=build /build/api/tacticalrmm ${TACTICAL_DIR}/api
-COPY --from=scripts /community-scripts ${TACTICAL_DIR}/community-scripts
+COPY --from=build /build/api/tacticalrmm ${TACTICAL_BASE_DIR}/api
+COPY --from=scripts /community-scripts ${TACTICAL_BASE_DIR}/community-scripts
 
-RUN mkdir -p "${TACTICAL_DIR}/tmp" && \
-    mkdir -p "${TACTICAL_DIR}/certs" && \
-    mkdir -p "${TACTICAL_DIR}/reporting" && \
-    mkdir -p "${TACTICAL_DIR}/reporting/assets" && \
-    touch "${TACTICAL_DIR}/tmp/.initialized" && chown -R 1000:1000 "${TACTICAL_DIR}" && \
-    touch "${TACTICAL_DIR}/certs/.initialized" && chown -R 1000:1000 "${TACTICAL_DIR}/certs" && \
-    touch "${TACTICAL_DIR}/reporting" && chown -R 1000:1000 "${TACTICAL_DIR}/reporting" && \
-    mkdir -p "${TACTICAL_DIR}/api/tacticalrmm/private/exe" && \
-    mkdir -p "${TACTICAL_DIR}/api/tacticalrmm/private/log" && \
-    touch "${TACTICAL_DIR}/api/tacticalrmm/private/log/django_debug.log"
+RUN mkdir -p "${TACTICAL_DIR}" && \
+    mkdir -p "${TACTICAL_BASE_DIR}/tmp" && \
+    mkdir -p "${TACTICAL_BASE_DIR}/certs" && \
+    mkdir -p "${TACTICAL_BASE_DIR}/reporting" && \
+    mkdir -p "${TACTICAL_BASE_DIR}/reporting/assets" && \
+    touch "${TACTICAL_BASE_DIR}/tmp/.initialized" && chown -R 1000:1000 "${TACTICAL_BASE_DIR}" && \
+    touch "${TACTICAL_BASE_DIR}/certs/.initialized" && chown -R 1000:1000 "${TACTICAL_BASE_DIR}/certs" && \
+    touch "${TACTICAL_BASE_DIR}/reporting" && chown -R 1000:1000 "${TACTICAL_BASE_DIR}/reporting" && \
+    mkdir -p "${TACTICAL_BASE_DIR}/api/tacticalrmm/private/exe" && \
+    mkdir -p "${TACTICAL_BASE_DIR}/api/tacticalrmm/private/log" && \
+    touch "${TACTICAL_BASE_DIR}/api/tacticalrmm/private/log/django_debug.log"
 
 # copy go install from build stage
 COPY --from=build ${VIRTUAL_ENV} ${VIRTUAL_ENV}
@@ -70,10 +72,12 @@ RUN apt-get update && \
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 
 # docker init
+WORKDIR ${TACTICAL_DIR}/api
+
+RUN python manage.py create_uwsgi_conf
+
 COPY ./apps/tacticalrmm/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-
-WORKDIR ${TACTICAL_DIR}/api
 
 EXPOSE 8080 4443 8383

@@ -133,8 +133,6 @@ Container | Channel | Image
 [sabnzbd](https://github.com/mlipscombe/containers/pkgs/container/sabnzbd) | stable | ghcr.io/mlipscombe/sabnzbd
 [sonarr](https://github.com/mlipscombe/containers/pkgs/container/sonarr) | main | ghcr.io/mlipscombe/sonarr
 [sonarr-develop](https://github.com/mlipscombe/containers/pkgs/container/sonarr-develop) | develop | ghcr.io/mlipscombe/sonarr-develop
-[tacticalrmm](https://github.com/mlipscombe/containers/pkgs/container/tacticalrmm) | stable | ghcr.io/mlipscombe/tacticalrmm
-[tacticalrmm-frontend](https://github.com/mlipscombe/containers/pkgs/container/tacticalrmm-frontend) | stable | ghcr.io/mlipscombe/tacticalrmm-frontend
 [tautulli](https://github.com/mlipscombe/containers/pkgs/container/tautulli) | master | ghcr.io/mlipscombe/tautulli
 [volsync](https://github.com/mlipscombe/containers/pkgs/container/volsync) | stable | ghcr.io/mlipscombe/volsync
 [wyoming-faster-whisper](https://github.com/mlipscombe/containers/pkgs/container/wyoming-faster-whisper) | stable | ghcr.io/mlipscombe/wyoming-faster-whisper

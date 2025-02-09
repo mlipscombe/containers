@@ -111,6 +111,7 @@ Container | Channel | Image
 --- | --- | ---
 [actions-runner](https://github.com/mlipscombe/containers/pkgs/container/actions-runner) | stable | ghcr.io/mlipscombe/actions-runner
 [bazarr](https://github.com/mlipscombe/containers/pkgs/container/bazarr) | stable | ghcr.io/mlipscombe/bazarr
+[caddy](https://github.com/mlipscombe/containers/pkgs/container/caddy) | stable | ghcr.io/mlipscombe/caddy
 [home-assistant](https://github.com/mlipscombe/containers/pkgs/container/home-assistant) | stable | ghcr.io/mlipscombe/home-assistant
 [jbops](https://github.com/mlipscombe/containers/pkgs/container/jbops) | stable | ghcr.io/mlipscombe/jbops
 [lidarr](https://github.com/mlipscombe/containers/pkgs/container/lidarr) | master | ghcr.io/mlipscombe/lidarr

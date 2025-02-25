@@ -1,5 +1,5 @@
 #!/bin/sh
-#shellcheck disable=SC2086
+set -e
 
 exec \
     /app/rtl_433 \

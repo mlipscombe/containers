@@ -129,6 +129,7 @@ Container | Channel | Image
 [readarr-develop](https://github.com/mlipscombe/containers/pkgs/container/readarr-develop) | develop | ghcr.io/mlipscombe/readarr-develop
 [readarr-nightly](https://github.com/mlipscombe/containers/pkgs/container/readarr-nightly) | nightly | ghcr.io/mlipscombe/readarr-nightly
 [redlib](https://github.com/mlipscombe/containers/pkgs/container/redlib) | stable | ghcr.io/mlipscombe/redlib
+[rsyslog](https://github.com/mlipscombe/containers/pkgs/container/rsyslog) | stable | ghcr.io/mlipscombe/rsyslog
 [rtl_433](https://github.com/mlipscombe/containers/pkgs/container/rtl_433) | stable | ghcr.io/mlipscombe/rtl_433
 [rtl_433_mqtt_hass](https://github.com/mlipscombe/containers/pkgs/container/rtl_433_mqtt_hass) | stable | ghcr.io/mlipscombe/rtl_433_mqtt_hass
 [sabnzbd](https://github.com/mlipscombe/containers/pkgs/container/sabnzbd) | stable | ghcr.io/mlipscombe/sabnzbd

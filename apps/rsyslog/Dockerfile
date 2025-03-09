@@ -21,9 +21,9 @@ COPY ./apps/rsyslog/entrypoint.sh /entrypoint.sh
 VOLUME /var/run/rsyslog/dev
 VOLUME /config
 
-ENTRYPOINT ["/usr/bin/catatonit", "--"]
-CMD ["/entrypoint.sh"]
-
 EXPOSE 514/tcp
 EXPOSE 514/udp
 EXPOSE 6514/tcp
+
+ENTRYPOINT ["/usr/bin/catatonit", "--"]
+CMD ["/entrypoint.sh"]

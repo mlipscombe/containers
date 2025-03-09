@@ -1,6 +1,8 @@
 ---
 port:
-  tcp:1514:
+  tcp:514:
     listening: true
-  udp:1514:
+  udp:514:
+    listening: true
+  tcp:6514:
     listening: true

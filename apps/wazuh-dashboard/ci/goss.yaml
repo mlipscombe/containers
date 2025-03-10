@@ -1,0 +1,4 @@
+---
+port:
+  tcp:5601:
+    listening: true

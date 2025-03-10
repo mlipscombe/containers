@@ -137,6 +137,7 @@ Container | Channel | Image
 [sonarr-develop](https://github.com/mlipscombe/containers/pkgs/container/sonarr-develop) | develop | ghcr.io/mlipscombe/sonarr-develop
 [tautulli](https://github.com/mlipscombe/containers/pkgs/container/tautulli) | master | ghcr.io/mlipscombe/tautulli
 [volsync](https://github.com/mlipscombe/containers/pkgs/container/volsync) | stable | ghcr.io/mlipscombe/volsync
+[wazuh-dashboard](https://github.com/mlipscombe/containers/pkgs/container/wazuh-dashboard) | stable | ghcr.io/mlipscombe/wazuh-dashboard
 [wyoming-faster-whisper](https://github.com/mlipscombe/containers/pkgs/container/wyoming-faster-whisper) | stable | ghcr.io/mlipscombe/wyoming-faster-whisper
 
 

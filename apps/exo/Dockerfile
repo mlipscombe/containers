@@ -6,7 +6,7 @@ ARG VERSION
 ARG CHANNEL
 
 RUN apt update \
-    && apt install -y --no-install-recommends python3-pip python3-venv python3-dev git libgl1-mesa-dev
+    && apt install -y --no-install-recommends python3-pip python3-venv python3-dev git libgl1-mesa-dev libdrm-dev
 
 USER root
 WORKDIR /app

@@ -11,7 +11,7 @@ RUN apt update \
 USER root
 WORKDIR /app
 
-RUN python -m venv /app
+RUN python3 -m venv /app
 ENV PATH="/app/bin:$PATH"
 
 RUN git clone https://github.com/exo-explore/exo.git /app && cd /app && git checkout "${VERSION}"

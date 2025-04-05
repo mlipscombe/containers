@@ -6,7 +6,7 @@ ARG VERSION
 ARG CHANNEL
 
 RUN apt-get update && \
-    python-is-python3 python3-pip python3-venv git
+    python3-pip python3-venv git
 
 USER root
 WORKDIR /app
@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir .
 FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04 AS target
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python-is-python3 libgl1 libglib2.0-dev uuid-runtime catatonit
+    && apt-get install -y --no-install-recommends libgl1 libglib2.0-dev uuid-runtime catatonit
 
 # Copy exo build to target image
 COPY --from=builder /app /app

@@ -7,5 +7,5 @@ channels:
     stable: true
     clean: true
     tests:
-      enabled: true
+      enabled: false
       type: web

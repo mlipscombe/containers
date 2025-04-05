@@ -5,6 +5,7 @@ channels:
   - name: stable
     platforms: ["linux/amd64", "linux/arm64"]
     stable: true
+    clean: true
     tests:
       enabled: true
       type: web

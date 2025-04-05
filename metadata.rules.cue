@@ -8,6 +8,7 @@
     name: #ChannelName
     platforms: [...#Platforms]
     stable: bool
+    clean?: bool
     tests: {
         enabled: bool
         type?:   =~"^(cli|web)$"

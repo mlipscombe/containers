@@ -133,6 +133,7 @@ def get_image_metadata(subdir, meta, forRelease=False, force=False, channels=Non
             platformToBuild["target_arch"] = target_arch
             platformToBuild["version"] = version
             platformToBuild["channel"] = channel["name"]
+            platformToBuild["clean"] = channel.get("clean", False)
             platformToBuild["label_type"]="org.opencontainers.image"
 
             if isfile(os.path.join(subdir, channel["name"], "Dockerfile")):

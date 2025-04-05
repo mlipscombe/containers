@@ -6,7 +6,7 @@ ARG VERSION
 ARG CHANNEL
 
 RUN apt update \
-    && apt install -y --no-install-recommends python3-pip python3-venv git
+    && apt install -y --no-install-recommends python3-pip python3-venv python3-dev git
 
 USER root
 WORKDIR /app

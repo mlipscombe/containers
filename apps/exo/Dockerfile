@@ -11,10 +11,10 @@ RUN apt update \
 USER root
 WORKDIR /app
 
+RUN git clone https://github.com/exo-explore/exo.git /app && cd /app && git checkout "${VERSION}"
+
 RUN python3 -m venv /app
 ENV PATH="/app/bin:$PATH"
-
-RUN git clone https://github.com/exo-explore/exo.git /app && cd /app && git checkout "${VERSION}"
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 

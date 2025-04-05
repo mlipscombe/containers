@@ -18,9 +18,9 @@ ENV PATH="/app/bin:$PATH"
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-RUN pip install --no-cache-dir .
-
 RUN pip install torch --index-url https://download.pytorch.org/whl/cu126
+
+RUN pip install --no-cache-dir .
 
 FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04 AS target
 

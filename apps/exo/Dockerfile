@@ -1,5 +1,5 @@
 ARG VERSION
-FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04 AS builder
+FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04 AS builder
 
 ARG TARGETPLATFORM
 ARG VERSION
@@ -22,7 +22,7 @@ RUN pip install torch --index-url https://download.pytorch.org/whl/cu126
 
 RUN pip install --no-cache-dir .
 
-FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04 AS target
+FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04 AS target
 
 RUN apt update \
     && apt install -y --no-install-recommends libgl1 libglib2.0-dev uuid-runtime catatonit

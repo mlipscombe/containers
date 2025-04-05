@@ -1,5 +1,5 @@
 ARG VERSION
-FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu20.04 AS builder
+FROM nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04 AS builder
 
 ARG TARGETPLATFORM
 ARG VERSION
@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 RUN pip install --no-cache-dir .
 
-FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu20.04 AS target
+FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04 AS target
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends python-is-python3 libgl1 libglib2.0-dev uuid-runtime catatonit

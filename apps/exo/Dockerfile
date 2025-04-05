@@ -5,8 +5,8 @@ ARG TARGETPLATFORM
 ARG VERSION
 ARG CHANNEL
 
-RUN apt-get update && \
-    python3-pip python3-venv git
+RUN apt update \
+    && apt install -y --no-install-recommends python3-pip python3-venv git
 
 USER root
 WORKDIR /app
@@ -22,14 +22,14 @@ RUN pip install --no-cache-dir .
 
 FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu24.04 AS target
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libgl1 libglib2.0-dev uuid-runtime catatonit
+RUN apt update \
+    && apt install -y --no-install-recommends libgl1 libglib2.0-dev uuid-runtime catatonit
 
 # Copy exo build to target image
 COPY --from=builder /app /app
 
-RUN apt-get autoremove \
-    && apt-get clean \
+RUN apt autoremove \
+    && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY ./apps/exo/entrypoint.sh /entrypoint.sh

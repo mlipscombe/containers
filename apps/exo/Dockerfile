@@ -35,6 +35,12 @@ RUN apt autoremove \
 COPY ./apps/exo/entrypoint.sh /entrypoint.sh
 
 WORKDIR /app
+VOLUME ["/data"]
+
+ENV EXO_DATA="/data"
+ENV EXO_LISTEN_PORT="5000"
+ENV EXO_NODE_PORT="5001"
+ENV EXO_BROADCAST_PORT="5002"
 
 ENTRYPOINT ["/usr/bin/catatonit", "--"]
 CMD ["/entrypoint.sh"]

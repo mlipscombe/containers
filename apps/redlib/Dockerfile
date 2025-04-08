@@ -12,7 +12,7 @@ RUN \
     git clone https://github.com/redlib-org/redlib.git /app && cd /app && git checkout "${VERSION}" && \
     cargo build --release
 
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:4f12c90f259bd273ed698660bc983053c5f4d2d2617beb0d481d4ec43d7cbbbd
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:de8e5bd83625801da1ff756f648abd4c65fd9da43fcdb30f67ac78ba86170ca8
 
 # trunk-ignore(hadolint/DL3018)
 RUN apk update && \

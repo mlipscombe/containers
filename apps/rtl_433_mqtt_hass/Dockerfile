@@ -9,7 +9,7 @@ ADD https://github.com/merbanan/rtl_433/archive/${VERSION}.tar.gz /tmp/rtl_433.t
 WORKDIR /build
 RUN tar -zxvf /tmp/rtl_433.tar.gz --strip-components=1
 
-FROM docker.io/library/python:3.13.2-alpine
+FROM docker.io/library/python:3.13.3-alpine
 
 RUN pip install paho-mqtt \
     && apk add --no-cache --update \

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-FROM docker.io/library/python:3.13-alpine
-=======
 # syntax=docker/dockerfile:1
->>>>>>> e5195786 (feat!: move to new structure from home-operations/containers)
 
 FROM docker.io/library/python:3.13-alpine3.21
 ARG VENDOR

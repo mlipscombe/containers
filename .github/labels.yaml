@@ -1,11 +1,24 @@
 ---
-- name: renovate/container
-  color: "027fa0"
+# Areas
+- name: area/apps
+  color: 0e8a16
+- name: area/github
+  color: 0e8a16
+- name: area/mise
+  color: 0e8a16
+- name: area/renovate
+  color: 0e8a16
+- name: area/taskfile
+  color: 0e8a16
+# Semantic Types
+- name: type/digest
+  color: ffeC19
 - name: type/patch
-  color: "ffeC19"
+  color: ffeC19
 - name: type/minor
-  color: "ff9800"
+  color: ff9800
 - name: type/major
-  color: "f6412d"
-- name: hold
-  color: "ee0701"
+  color: f6412d
+# Uncategorized
+- name: stale
+  color: c5def5

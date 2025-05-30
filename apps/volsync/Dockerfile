@@ -12,9 +12,7 @@ ENV CGO_ENABLED=0 \
 RUN go install -a -ldflags "-X=main.volsyncVersion=v${VERSION}" github.com/backube/volsync@v${VERSION}
 
 FROM docker.io/library/alpine:3.21
-ARG TARGETPLATFORM
 ARG VERSION
-ARG CHANNEL
 
 RUN \
     apk add --no-cache \
@@ -40,5 +38,3 @@ COPY --from=docker.io/restic/restic:0.17.3 /usr/bin/restic /usr/local/bin/restic
 COPY --from=volsync /go/bin/volsync /manager
 
 ENTRYPOINT ["/bin/bash"]
-
-LABEL org.opencontainers.image.source="https://github.com/backube/volsync"

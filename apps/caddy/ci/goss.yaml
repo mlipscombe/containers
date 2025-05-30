@@ -1,4 +1,0 @@
----
-port:
-  tcp:80:
-    listening: true

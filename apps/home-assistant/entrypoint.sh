@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
-#shellcheck disable=SC2086
 
 unset UV_SYSTEM_PYTHON
-# Ensure $VENV_FOLDER directory exists.
+
 mkdir -p "${VENV_FOLDER}"
-
-# Create venv if required.
 uv venv --system-site-packages --link-mode=copy --allow-existing "${VENV_FOLDER}"
-# Activate the venv
 source "${VENV_FOLDER}/bin/activate"
-# Install uv into the venv if required. This is needed for home-assistant to properly invoke uv to install additional deps.
-uv pip freeze --system | grep ^uv= | xargs uv pip install
 
-if [[ "${HOME_ASSISTANT__HACS_INSTALL}" == "true" ]]; then
-    curl -sfSL https://get.hacs.xyz | bash -
-fi
+site_packages=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")
+uv pip install --no-index --find-links="${site_packages}" uv
+
+ln -sf /proc/self/fd/1 /config/home-assistant.log
 
 exec \
     python3 -m homeassistant \

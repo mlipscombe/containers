@@ -1,8 +1,6 @@
 FROM docker.io/nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
 
-ARG TARGETARCH
 ARG VERSION
-ARG CHANNEL
 
 ENV DEBCONF_NONINTERACTIVE_SEEN="true" \
     DEBIAN_FRONTEND="noninteractive"
@@ -37,7 +35,7 @@ RUN \
     && apt-get clean \
     && mkdir -p /config && chown nobody:nogroup -R /config
 
-COPY ./apps/wyoming-faster-whisper/entrypoint.sh /entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
 
 USER nobody:nogroup
 

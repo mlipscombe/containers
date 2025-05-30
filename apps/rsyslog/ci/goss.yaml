@@ -1,8 +1,0 @@
----
-port:
-  tcp:514:
-    listening: true
-  udp:514:
-    listening: true
-  tcp:6514:
-    listening: true

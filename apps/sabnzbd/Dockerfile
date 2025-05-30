@@ -1,40 +1,39 @@
-FROM docker.io/library/python:3.13-alpine
+# syntax=docker/dockerfile:1
 
-ARG TARGETPLATFORM
+FROM docker.io/library/python:3.13-alpine3.21
 ARG VERSION
-ARG CHANNEL
 
 ENV \
+    CRYPTOGRAPHY_DONT_BUILD_RUST=1 \
+    PIP_BREAK_SYSTEM_PACKAGES=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_ROOT_USER_ACTION=ignore \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_ROOT_USER_ACTION=ignore \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_BREAK_SYSTEM_PACKAGES=1 \
-    CRYPTOGRAPHY_DONT_BUILD_RUST=1
+    UV_NO_CACHE=true \
+    UV_SYSTEM_PYTHON=true
 
-ENV UMASK="0002" \
-    TZ="Etc/UTC"
-
-ENV SABNZBD__ADDRESS=0.0.0.0 \
-    SABNZBD__PORT=8080
+ENV SABNZBD__ADDRESS="[::]" \
+    SABNZBD__PORT="8080"
 
 USER root
 WORKDIR /app
 
 RUN \
     apk add --no-cache \
+        7zip \
         bash \
         ca-certificates \
         catatonit \
         coreutils \
         curl \
-        jo \
         jq \
         nano \
-        p7zip \
-        trurl \
         tzdata \
+    && \
+    apk add --no-cache --repository="https://dl-cdn.alpinelinux.org/alpine/edge/testing/" \
+        par2cmdline-turbo \
     && \
     apk add --no-cache --virtual=.build-deps \
         build-base \
@@ -45,26 +44,21 @@ RUN \
     && mkdir -p /app \
     && curl -fsSL "https://github.com/sabnzbd/sabnzbd/releases/download/${VERSION}/SABnzbd-${VERSION}-src.tar.gz" \
         | tar xzf - -C /app --strip-components=1 \
+    && python tools/make_mo.py \
     && pip install uv \
-    && uv pip install --system --requirement /app/requirements.txt \
+    && uv pip install \
+        --find-links "https://wheel-index.linuxserver.io/alpine-3.21/" \
+        --requirement /app/requirements.txt \
     && chown -R root:root /app && chmod -R 755 /app \
     && pip uninstall --yes uv && apk del --purge .build-deps \
     && rm -rf /root/.cache /root/.cargo /tmp/*
 
-COPY ./apps/sabnzbd/sabnzbd.ini /app/sabnzbd.ini
-COPY ./apps/sabnzbd/entrypoint.sh /entrypoint.sh
+COPY . /
 
 COPY --from=ghcr.io/linuxserver/unrar:latest /usr/bin/unrar-alpine /usr/bin/unrar
-
-COPY --from=ghcr.io/linuxserver/sabnzbd:latest /usr/local/bin/par2 /usr/local/bin/par2
-RUN ln -s /usr/local/bin/par2 /usr/local/bin/par2create \
-    && ln -s /usr/local/bin/par2 /usr/local/bin/par2repair \
-    && ln -s /usr/local/bin/par2 /usr/local/bin/par2verify
 
 USER nobody:nogroup
 WORKDIR /config
 VOLUME ["/config"]
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]
-
-LABEL org.opencontainers.image.source="https://github.com/sabnzbd/sabnzbd"

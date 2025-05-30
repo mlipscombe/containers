@@ -1,119 +1,106 @@
-FROM docker.io/library/python:3.13.3-alpine
+# syntax=docker/dockerfile:1
 
-ARG TARGETPLATFORM
+ARG TARGETARCH
+ARG ARCH=${TARGETARCH/arm64/aarch64}
+FROM ghcr.io/home-assistant/${ARCH}-base-python:3.13-alpine3.21
+ARG TARGETARCH
+ARG ARCH=${TARGETARCH/arm64/aarch64}
 ARG VERSION
-ARG CHANNEL
 
 ENV \
+    CRYPTOGRAPHY_DONT_BUILD_RUST=1 \
+    PIP_BREAK_SYSTEM_PACKAGES=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_ROOT_USER_ACTION=ignore \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_ROOT_USER_ACTION=ignore \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_BREAK_SYSTEM_PACKAGES=1 \
-    UV_SYSTEM_PYTHON=true \
     UV_NO_CACHE=true \
-    CRYPTOGRAPHY_DONT_BUILD_RUST=1 \
-    HOMEASSISTANT_WHEELS="https://wheels.home-assistant.io/musllinux/" \
-    HOME="/config" \
-    VENV_FOLDER="/config/.venv"
+    UV_SYSTEM_PYTHON=true
 
-ENV UMASK="0002" \
-    TZ="Etc/UTC"
+ENV HOME="/config" \
+    PYTHONUSERBASE="/usr/local" \
+    VENV_FOLDER="/config/.venv"
 
 USER root
 WORKDIR /app
 
-#hadolint ignore=DL3018,DL3013,DL3059,DL4006
 RUN \
     apk add --no-cache \
-    bash \
-    binutils \
-    bluez \
-    bluez-deprecated \
-    bluez-libs \
-    ca-certificates \
-    catatonit \
-    coreutils \
-    cups-libs \
-    curl \
-    eudev-libs \
-    ffmpeg \
-    git \
-    iputils \
-    jo \
-    jq \
-    libcap \
-    libjpeg-turbo-dev \
-    libpcap-dev \
-    libstdc++ \
-    libxslt \
-    mariadb-connector-c \
-    mariadb-connector-c-dev \
-    nano \
-    openssh-client \
-    openssl \
-    postgresql-libs \
-    socat \
-    tiff \
-    trurl \
-    tzdata \
-    unzip \
+        bash \
+        binutils \
+        bluez \
+        bluez-deprecated \
+        bluez-libs \
+        ca-certificates \
+        catatonit \
+        coreutils \
+        cups-libs \
+        curl \
+        eudev-libs \
+        ffmpeg \
+        git \
+        grep \
+        hwdata-usb \
+        imlib2 \
+        iperf3 \
+        iputils \
+        jq \
+        libcap \
+        libftdi1 \
+        libgpiod \
+        libturbojpeg \
+        libpulse \
+        libstdc++ \
+        libxslt \
+        libzbar \
+        mailcap \
+        mariadb-connector-c \
+        nano \
+        net-tools \
+        nmap \
+        openssh-client \
+        openssl \
+        pianobar \
+        postgresql-libs \
+        pulseaudio-alsa \
+        socat \
+        tiff \
+        tzdata \
+        unzip \
+        xz \
     && \
     apk add --no-cache --virtual=.build-deps \
-    autoconf \
-    build-base \
-    cargo \
-    cmake \
-    cups-dev \
-    eudev-dev \
-    ffmpeg-dev \
-    glib-dev \
-    jpeg-dev \
-    libffi-dev \
-    libxml2-dev \
-    libxslt-dev \
-    postgresql-dev \
-    unixodbc-dev \
+        autoconf \
+        build-base \
+        libffi-dev \
     && \
     pip install uv \
     && \
     curl -fsSL "https://github.com/home-assistant/core/archive/${VERSION}.tar.gz" \
-    | tar xzf - -C /tmp --strip-components=1 \
-    && \
-    case "${TARGETPLATFORM}" in \
-    'linux/amd64') \
-    export ARCH='amd64'; \
-    export GO2RTC_SUFFIX='amd64'; \
-    ;; \
-    'linux/arm64') \
-    export ARCH='aarch64'; \
-    export GO2RTC_SUFFIX='arm64'; \
-    ;; \
-    esac \
+        | tar xzf - -C /tmp --strip-components=1 \
     && \
     HOME_ASSISTANT_BASE=$(curl -fsSL "https://raw.githubusercontent.com/home-assistant/core/${VERSION}/build.yaml" | grep "${ARCH}: " | cut -d ":" -f3) \
     && \
-    uv pip install --only-binary=:all: --find-links "${HOMEASSISTANT_WHEELS}" \
-    --requirement "https://raw.githubusercontent.com/home-assistant/docker/${HOME_ASSISTANT_BASE}/requirements.txt" \
+    uv pip install --only-binary=:all: --find-links "https://wheels.home-assistant.io/musllinux/" \
+        --requirement "https://raw.githubusercontent.com/home-assistant/docker/${HOME_ASSISTANT_BASE}/requirements.txt" \
     && \
-    uv pip install --only-binary=:all: --find-links "${HOMEASSISTANT_WHEELS}" \
-    --requirement /tmp/requirements_all.txt \
+    uv pip install --only-binary=:all: --find-links "https://wheels.home-assistant.io/musllinux/" \
+        --requirement /tmp/requirements_all.txt \
     && \
-    uv pip install --only-binary=:all: --find-links "${HOMEASSISTANT_WHEELS}" \
-    homeassistant=="${VERSION}" \
-    && curl -L https://github.com/AlexxIT/go2rtc/releases/download/v1.9.8/go2rtc_linux_${GO2RTC_SUFFIX} --output /bin/go2rtc \
+    uv pip install --only-binary=:all: --find-links "https://wheels.home-assistant.io/musllinux/" \
+        homeassistant=="${VERSION}" \
+    && curl -fsSL -o /bin/go2rtc \
+        "https://github.com/AlexxIT/go2rtc/releases/latest/download/go2rtc_linux_${TARGETARCH}" \
     && chmod +x /bin/go2rtc \
     && mkdir -p /config && chown nobody:nogroup -R /config \
     && apk del --purge .build-deps \
     && rm -rf /root/.cache /root/.cargo /tmp/*
 
-COPY ./apps/home-assistant/entrypoint.sh /entrypoint.sh
+COPY . /
 
 USER nobody:nogroup
 WORKDIR /config
 VOLUME ["/config"]
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]
-
-LABEL org.opencontainers.image.source="https://github.com/home-assistant/core"

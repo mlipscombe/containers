@@ -1,5 +1,5 @@
 ARG VERSION
-FROM	alpine:3.21.3
+FROM alpine:3.21.3
 
 RUN	apk --no-cache update  \
     && apk add --no-cache \
@@ -15,8 +15,8 @@ RUN	apk --no-cache update  \
     rsyslog-mmutf8fix \
     rsyslog-tls
 
-COPY ./apps/rsyslog/files/ /
-COPY ./apps/rsyslog/entrypoint.sh /entrypoint.sh
+COPY ./defaults/ /
+COPY ./entrypoint.sh /entrypoint.sh
 
 VOLUME /var/run/rsyslog/dev
 VOLUME /config

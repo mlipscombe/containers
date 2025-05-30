@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=redlib-org/redlib
-  default = "0.36.0"
+  default = "v0.36.0"
 }
 
 variable "SOURCE" {

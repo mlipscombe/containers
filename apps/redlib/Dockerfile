@@ -4,10 +4,6 @@ ARG VERSION
 
 WORKDIR /app
 
-# RUN \
-#   git clone --depth 1 --branch "v${VERSION}" -c advice.detachedHead=false https://github.com/redlib-org/redlib.git /app && \
-#   cargo build --release
-
 RUN \
     git clone https://github.com/redlib-org/redlib.git /app && cd /app && git checkout "${VERSION}" && \
     cargo build --release

@@ -22,6 +22,12 @@ RUN apt-get update && \
         postgresql-client libpq-dev wget curl vim raptor2-utils && \
     rm -rf /var/lib/apt/lists/*
 
+RUN npm install -g bash-language-server dockerfile-language-server-nodejs \
+    pyright sql-language-server typescript-language-server \
+    unified-language-server vscode-css-languageserver-bin \
+    vscode-html-languageserver-bin vscode-json-languageserver-bin \
+    yaml-language-server
+
 USER $NB_UID
 
 RUN python -m pip install --upgrade pip

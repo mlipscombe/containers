@@ -1,6 +1,5 @@
-jupyterlab>=2.0
-jedi==0.17.0
-# jupyterlab-lsp does not support 0.18
+jupyterlab>=4.1.0,<5.0.0a0
+jedi<0.18.0,>=0.17.0
 pyspark
 findspark
 networkx
@@ -28,7 +27,8 @@ ipython
 sympy
 nose
 jupyter-lsp
-python-language-server
+python-lsp-server[all]
+jedi-language-server
 jupyterlab-git
 tqdm
 
@@ -41,6 +41,12 @@ cwltool
 papermill
 
 jupyterlab_widgets
+jupyterlab_darkside_theme
+
+polars
+pyarrow
+seaborn
+connectorx
 
 sparknlp
 pandas

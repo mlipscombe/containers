@@ -320,7 +320,7 @@
 #c.NotebookApp.ssl_options = {}
 
 ## Supply overrides for terminado. Currently only supports "shell_command".
-c.NotebookApp.terminado_settings = {'shell_command': ['/bin/bash']}
+c.NotebookApp.terminado_settings = {'shell_command': ['/bin/bash']} # type: ignore
 
 ## Set to False to disable terminals.
 #
@@ -695,7 +695,7 @@ c.NotebookApp.terminado_settings = {'shell_command': ['/bin/bash']}
 #c.ContentsManager.files_handler_params = {}
 
 ## Glob patterns to hide in file and directory listings.
-#c.ContentsManager.hide_globs = ['__pycache__', '*.pyc', '*.pyo', '.DS_Store', '*.so', '*.dylib', '*~']
+c.ContentsManager.hide_globs = ['__pycache__', '*.pyc', '*.pyo', '.DS_Store', '*.so', '*.dylib', '*~', 'lost+found'] # type: ignore
 
 ## Python callable or importstring thereof
 #

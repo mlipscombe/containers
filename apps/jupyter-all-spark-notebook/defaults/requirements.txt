@@ -32,6 +32,9 @@ jedi-language-server
 jupyterlab-git
 tqdm
 
+litellm
+openai
+
 pandas-datareader
 rdflib
 SPARQLWrapper

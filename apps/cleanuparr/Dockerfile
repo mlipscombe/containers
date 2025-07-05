@@ -8,8 +8,9 @@ USER root
 COPY . /
 
 RUN mkdir -p /config/logs && \
-    chown -R nobody:nogroup /app && \
-    chown -R nobody:nogroup /config
+    chown -R nobody:nogroup /config && \
+    chmod 1777 /config/logs && \
+    chown -R nobody:nogroup /app
 
 USER nobody:nogroup
 

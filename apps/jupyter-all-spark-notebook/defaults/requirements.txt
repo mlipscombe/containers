@@ -1,6 +1,6 @@
 jupyterlab>=4.1.0,<5.0.0a0
 jedi<0.18.0,>=0.17.0
-pyspark
+pyspark==3.5.6
 findspark
 networkx
 numpy

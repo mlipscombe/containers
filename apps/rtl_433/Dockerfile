@@ -8,7 +8,7 @@ WORKDIR /build
 RUN tar -zxvf /tmp/rtl_433.tar.gz --strip-components=1
 RUN mkdir out && cd out && cmake -DENABLE_OPENSSL=ON .. && make -j$(nproc) && make install
 
-FROM docker.io/library/alpine:3.21.3
+FROM docker.io/library/alpine:3.22
 
 RUN \
     apk add --no-cache --update \

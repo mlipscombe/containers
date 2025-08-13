@@ -1,5 +1,5 @@
 ARG VERSION
-FROM docker.io/library/golang:1.24-alpine AS volsync
+FROM docker.io/library/golang:1.25-alpine AS volsync
 ARG VERSION
 ARG TARGETOS
 ARG TARGETARCH

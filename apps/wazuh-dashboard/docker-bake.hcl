@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=docker depName=wazuh/wazuh-dashboard
-  default = "4.13.0"
+  default = "4.13.1"
 }
 
 variable "SOURCE" {

@@ -1,4 +1,4 @@
-FROM docker.io/library/alpine:3.21.3 AS builder
+FROM docker.io/library/alpine:3.21.5 AS builder
 ARG VERSION
 
 ADD https://github.com/merbanan/rtl_433/archive/${VERSION}.tar.gz /tmp/rtl_433.tar.gz

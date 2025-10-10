@@ -1,5 +1,5 @@
 ARG VERSION
-FROM alpine:3.21.4
+FROM alpine:3.21.5
 
 RUN	apk --no-cache update  \
     && apk add --no-cache \

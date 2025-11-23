@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=docker depName=ghcr.io/cleanuparr/cleanuparr
-  default = "2.4.0"
+  default = "2.4.6"
 }
 
 variable "SOURCE" {

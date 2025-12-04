@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=backube/volsync
-  default = "v0.12.1"
+  default = "v0.14.0"
 }
 
 variable "SOURCE" {

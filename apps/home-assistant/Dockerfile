@@ -75,20 +75,18 @@ RUN \
         build-base \
         libffi-dev \
     && \
-    pip install uv \
+    pip install uv==0.9.6 \
     && \
-    curl -fsSL "https://github.com/home-assistant/core/archive/${VERSION}.tar.gz" \
+    curl -fsSL "https://github.com/home-assistant/core/archive/refs/tags/${VERSION}.tar.gz" \
         | tar xzf - -C /tmp --strip-components=1 \
     && \
-    HOME_ASSISTANT_BASE=$(curl -fsSL "https://raw.githubusercontent.com/home-assistant/core/${VERSION}/build.yaml" | grep "${ARCH}: " | cut -d ":" -f3) \
+    uv pip install --find-links "https://wheels.home-assistant.io/musllinux/" \
+        --requirement "https://raw.githubusercontent.com/home-assistant/core/refs/tags/${VERSION}/requirements.txt" \
     && \
-    uv pip install --only-binary=:all: --find-links "https://wheels.home-assistant.io/musllinux/" \
-        --requirement "https://raw.githubusercontent.com/home-assistant/docker/${HOME_ASSISTANT_BASE}/requirements.txt" \
-    && \
-    uv pip install --only-binary=:all: --find-links "https://wheels.home-assistant.io/musllinux/" \
+    uv pip install --find-links "https://wheels.home-assistant.io/musllinux/" \
         --requirement /tmp/requirements_all.txt \
     && \
-    uv pip install --only-binary=:all: --find-links "https://wheels.home-assistant.io/musllinux/" \
+    uv pip install --find-links "https://wheels.home-assistant.io/musllinux/" \
         homeassistant=="${VERSION}" \
     && curl -fsSL -o /bin/go2rtc \
         "https://github.com/AlexxIT/go2rtc/releases/latest/download/go2rtc_linux_${TARGETARCH}" \

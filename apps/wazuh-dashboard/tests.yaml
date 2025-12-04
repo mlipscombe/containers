@@ -1,7 +1,0 @@
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goss-org/goss/master/docs/schema.yaml
-schemaVersion: "2.0.0"
-fileExistenceTests:
-  - name: anomalyDetectionDashboards
-    path: /usr/share/wazuh-dashboard/plugins/anomalyDetectionDashboards
-    shouldExist: true

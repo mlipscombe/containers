@@ -33,7 +33,7 @@ RUN \
         && chmod a+rx /mover-restic/*.sh \
     && rm -rf /tmp/*
 
-COPY --from=docker.io/rclone/rclone:1.70.0 /usr/local/bin/rclone /usr/local/bin/rclone
+COPY --from=docker.io/rclone/rclone:1.72.0 /usr/local/bin/rclone /usr/local/bin/rclone
 COPY --from=docker.io/restic/restic:0.18.1 /usr/bin/restic /usr/local/bin/restic
 COPY --from=volsync /go/bin/volsync /manager
 

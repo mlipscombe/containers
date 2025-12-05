@@ -77,6 +77,9 @@ RUN mkdir -p $APP_HOME \
     | tar xzf - -C $APP_HOME --strip-components=1 \
     && chown -R docker:docker $APP_HOME
 
+COPY . /
+RUN chmod +x /entrypoint.sh
+
 USER docker
 
 RUN mkdir -p tmp/files
@@ -94,6 +97,5 @@ RUN for config in amazon_s3 database vault_contents database dynamic_settings \
     delayed_jobs domain file_store outgoing_mail security external_migration; \
     do cp config/$config.yml.example config/$config.yml; done
 
-RUN chmod +x /usr/src/app/docker-entrypoint.sh
-
-ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/tini" "--" "/entrypoint.sh"]

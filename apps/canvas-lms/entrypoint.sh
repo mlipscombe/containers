@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Apply environment-based config overrides into Canvas YAML configs
+ruby /scripts/env_config_merge.rb
+
+for file in /usr/src/nginx/{,**/}*.erb; do
+  if [ -f "$file" ]; then
+    # don't overwrite an existing destination file
+    if [ ! -e "${file%.*}" ]; then
+      erb -T- "$file" > "${file%.*}"
+      echo "${file%.*}: generated."
+    else
+      >&2 echo "${file%.*}: SKIPPED! refusing to overwrite existing file."
+    fi
+  fi
+done
+
+exec sudo -E /usr/sbin/nginx -c /usr/src/nginx/nginx.conf

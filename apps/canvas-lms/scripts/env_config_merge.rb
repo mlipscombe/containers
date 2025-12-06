@@ -30,6 +30,9 @@ ENV.each do |env_key, raw_value|
   if parts.last.match?(/^[0-9]+$/)
     index = parts.pop.to_i
     path = parts.map { |p| p.downcase }
+    # If the first segment matches the current RAILS_ENV, drop it to avoid
+    # double-nesting (e.g., production.production.*)
+    path.shift if !path.empty? && path.first == RAILS_ENV.downcase
     path_key = path.join('.')
 
     # Skip indexed form if we already have a scalar/json override for this path
@@ -38,6 +41,9 @@ ENV.each do |env_key, raw_value|
     indexed_overrides[config_name][path_key][index] = raw_value
   else
     path = parts.map { |p| p.downcase }
+    # If the first segment matches the current RAILS_ENV, drop it to avoid
+    # double-nesting under the environment key
+    path.shift if !path.empty? && path.first == RAILS_ENV.downcase
     path_key = path.join('.')
 
     # Mark that a scalar/json override exists for this path

@@ -14,9 +14,9 @@ indexed_overrides = Hash.new { |h, k| h[k] = Hash.new { |h2, k2| h2[k2] = {} } }
 scalar_present = Hash.new { |h, k| h[k] = {} }
 
 ENV.each do |env_key, raw_value|
-  next unless env_key.start_with?('CANVAS_')
+  next unless env_key.start_with?('CANVAS_CONFIG_')
 
-  body = env_key.sub(/^CANVAS_/, '')
+  body = env_key.sub(/^CANVAS_CONFIG_/, '')
   parts = body.split('__')
   next if parts.empty?
 

@@ -13,6 +13,10 @@ variable "SOURCE" {
   default = "https://github.com/jupyter/docker-stacks"
 }
 
+variable "NEEDS_DISK_SPACE" {
+  default = "true"
+}
+
 group "default" {
   targets = ["image-local"]
 }

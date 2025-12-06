@@ -13,6 +13,10 @@ variable "SOURCE" {
   default = "https://github.com/rhasspy/wyoming-faster-whisper"
 }
 
+variable "NEEDS_DISK_SPACE" {
+  default = "true"
+}
+
 group "default" {
   targets = ["image-local"]
 }

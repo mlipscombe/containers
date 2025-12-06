@@ -21,6 +21,7 @@ jobs:
     outputs:
       app-exists: ${{ steps.app-exists.outputs.exists }}
       platforms: ${{ steps.app-options.outputs.platforms }}
+      needs-disk-space: ${{ steps.app-options.outputs.needs-disk-space }}
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -78,7 +79,8 @@ jobs:
         platform: ${{ fromJson(needs.plan.outputs.platforms) }}
     runs-on: ${{ startsWith(matrix.platform, 'linux/arm') && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     steps:
-      - name: Free Disk Space (Ubuntu)
+      - if: ${{ needs.plan.outputs.needs-disk-space == 'true' }}
+        name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
         with:
           # this might remove tools that are actually needed,
@@ -224,10 +226,11 @@ jobs:
   attest:
     if: ${{ inputs.release }}
     name: Attest
-    needs: ["release"]
+    needs: ["plan", "release"]
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space (Ubuntu)
+      - if: ${{ needs.plan.outputs.needs-disk-space == 'true' }}
+        name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
         with:
           # this might remove tools that are actually needed,

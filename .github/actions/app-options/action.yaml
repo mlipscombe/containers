@@ -18,6 +18,9 @@ outputs:
   version:
     description: Version
     value: ${{ steps.options.outputs.version }}
+  needs-disk-space:
+    description: Whether this application needs extra disk space when building
+    value: ${{ steps.options.outputs.needs-disk-space }}
 
 runs:
   using: composite
@@ -40,6 +43,16 @@ runs:
                 | jq --raw-output '.[] | select(.name == "VERSION") | .value' \
         )
 
+        NEEDS_DISK_SPACE=$(\
+            docker buildx bake --list type=variables,format=json --progress=quiet \
+                | jq --raw-output 'map(select(.name == "NEEDS_DISK_SPACE") | .value) | first // empty' \
+        )
+
+        if [ -z "${NEEDS_DISK_SPACE}" ]; then
+            NEEDS_DISK_SPACE="false"
+        fi
+
         echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
         echo "source=${SOURCE}" >> $GITHUB_OUTPUT
         echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "needs-disk-space=${NEEDS_DISK_SPACE}" >> $GITHUB_OUTPUT

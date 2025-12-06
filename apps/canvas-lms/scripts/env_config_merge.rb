@@ -91,7 +91,7 @@ overrides.each do |config_name, paths|
   file_path = File.join(CONFIG_DIR, "#{config_name}.yml")
   next unless File.file?(file_path)
 
-  data = YAML.load_file(file_path)
+  data = YAML.load_file(file_path, aliases: true)
   data = {} if data.nil?
 
   env_root = (data[RAILS_ENV] ||= {})

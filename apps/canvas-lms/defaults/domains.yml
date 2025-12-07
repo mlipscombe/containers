@@ -1,0 +1,8 @@
+production: &production
+  domain: <%= ENV.fetch('CANVAS_DOMAIN', 'canvas') %>
+
+test:
+  <<: *production
+
+development:
+  <<: *production

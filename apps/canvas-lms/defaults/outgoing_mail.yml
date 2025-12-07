@@ -1,0 +1,9 @@
+production: &production
+  address: <%= ENV.fetch('CANVAS_OUTGOING_MAIL_HOST', 'mail') %>
+  port: <%= ENV.fetch('CANVAS_OUTGOING_MAIL_PORT', 25) %>
+  domain: <%= ENV.fetch('CANVAS_DOMAIN', 'canvas') %>
+  outgoing_address: <%= ENV.fetch('CANVAS_OUTGOING_MAIL_OUTGOING_ADDRESS', 'canvas@example.com') %>
+  default_name: <%= ENV.fetch('CANVAS_OUTGOING_MAIL_DEFAULT_NAME', 'Canvas') %>
+
+development:
+  <<: *production

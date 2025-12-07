@@ -92,10 +92,7 @@ RUN yarn install --frozen-lockfile || yarn install --frozen-lockfile --network-c
     bin/rails canvas:compile_assets --trace && \
     rm -rf node_modules
 
-# Copy Canvas default configuration
-RUN for config in amazon_s3 database vault_contents database dynamic_settings \
-    delayed_jobs domain file_store outgoing_mail security external_migration; \
-    do cp config/$config.yml.example config/$config.yml; done
+RUN cp /defaults/* /usr/src/app/config/
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/tini" "--" "/entrypoint.sh"]

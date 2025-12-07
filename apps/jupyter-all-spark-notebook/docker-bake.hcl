@@ -5,8 +5,8 @@ variable "APP" {
 }
 
 variable "VERSION" {
-  // renovate: datasource=docker depName=quay.io/jupyter/all-spark-notebook
-  default = "2025-06-02"
+  // renovate: datasource=docker depName=quay.io/jupyter/all-spark-notebook versioning=docker
+  default = "2025-12-03"
 }
 
 variable "SOURCE" {

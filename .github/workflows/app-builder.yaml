@@ -56,10 +56,11 @@ jobs:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ inputs.app }}
           tags: |
-            type=semver,pattern={{version}},value=${{ steps.app-versions.outputs.semantic }}
+            type=semver,pattern={{version}},value=${{ steps.app-versions.outputs.semantic }},enable=${{ steps.app-versions.outputs.is-valid-semver }}
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.app-versions.outputs.semantic }},enable=${{ steps.app-versions.outputs.is-valid-semver }}
             type=semver,pattern={{major}},value=${{ steps.app-versions.outputs.semantic }},enable=${{ steps.app-versions.outputs.is-valid-semver }}
-            type=raw,value=${{ steps.app-versions.outputs.raw }},enable=${{ steps.app-versions.outputs.is-valid-semver }}
+            # Always create a raw tag based on the upstream/raw version (e.g. 2026-01-28.22)
+            type=raw,value=${{ steps.app-versions.outputs.raw }}
             type=raw,value=rolling
 
       - name: Upload Bake Metadata

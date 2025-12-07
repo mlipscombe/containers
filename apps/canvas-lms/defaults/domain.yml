@@ -1,5 +1,6 @@
 production: &production
   domain: <%= ENV.fetch('CANVAS_DOMAIN', 'canvas') %>
+  ssl: <%= ENV.fetch('CANVAS_SSL', false) %>
 
 test:
   <<: *production

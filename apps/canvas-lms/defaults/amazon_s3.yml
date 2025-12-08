@@ -1,0 +1,13 @@
+production: &production
+  bucket_name: <%= ENV.fetch('CANVAS_S3_BUCKET_NAME', 'canvas') %>
+  access_key_id: <%= ENV.fetch('CANVAS_S3_ACCESS_KEY_ID', 'somekey') %>
+  secret_access_key: <%= ENV.fetch('CANVAS_S3_SECRET_ACCESS_KEY', 'some_secret_key') %>
+  region: <%= ENV.fetch('CANVAS_S3_REGION', 'us-east-1') %>
+  force_path_style: <%= ENV.fetch('CANVAS_S3_FORCE_PATH_STYLE', false) %>
+  endpoint: <%= ENV.fetch('CANVAS_S3_ENDPOINT', 'https://s3.amazonaws.com') %>
+
+test:
+  <<: *production
+
+development:
+  <<: *production

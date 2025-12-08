@@ -1,0 +1,9 @@
+production: &production
+  storage: <%= ENV.fetch('CANVAS_FILE_STORE_STORAGE', 'local') %>
+  path_prefix: <%= ENV.fetch('CANVAS_FILE_STORE_PATH_PREFIX', 'tmp/files') %>
+
+development:
+  <<: *production
+
+test:
+  <<: *production

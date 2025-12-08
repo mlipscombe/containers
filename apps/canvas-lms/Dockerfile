@@ -77,6 +77,13 @@ RUN mkdir -p $APP_HOME \
     | tar xzf - -C $APP_HOME --strip-components=1 \
     && chown -R docker:docker $APP_HOME
 
+# Add QTI migration tool
+RUN mkdir -p $APP_HOME/vendor/QTIMigrationTool \
+    && curl -fsSL https://github.com/instructure/QTIMigrationTool/archive/refs/heads/master.tar.gz \
+    | tar xzf - -C $APP_HOME/vendor/QTIMigrationTool --strip-components=1 \
+    && chown -R docker:docker $APP_HOME/vendor/QTIMigrationTool \
+    && chmod +x $APP_HOME/vendor/QTIMigrationTool/migrate.py
+
 COPY . /
 RUN chmod +x /entrypoint.sh
 

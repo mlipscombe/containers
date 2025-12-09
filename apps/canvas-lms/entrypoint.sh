@@ -13,6 +13,9 @@ for file in /usr/src/nginx/{,**/}*.erb; do
   fi
 done
 
+bundle exec rake db:initial_setup
+bundle exec rake brand_configs:generate_and_upload_all
+
 ln -sf /proc/self/fd/1 /usr/src/app/log/production.log
 
 exec sudo -E /usr/sbin/nginx -c /usr/src/nginx/nginx.conf

@@ -22,4 +22,8 @@ if [[ -z "${CANVAS_LTI_SIGNING_SECRET}" ]]; then
     export CANVAS_LTI_SIGNING_SECRET
 fi
 
+echo "Generating brand configs..."
+rake brand_configs:generate_and_upload_all
+
+echo "Starting Canvas LMS..."
 exec /sbin/tini -- "$@"

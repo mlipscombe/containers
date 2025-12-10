@@ -60,6 +60,7 @@ jobs:
     needs: ["changed"]
     uses: ./.github/workflows/app-builder.yaml
     permissions:
+      actions: read
       attestations: write
       contents: write
       id-token: write

@@ -23,11 +23,11 @@ if [[ -z "${CANVAS_LTI_SIGNING_SECRET}" ]]; then
 fi
 
 
-echo "Running database setup..."
-bundle exec rake db:initial_setup
+#echo "Running database setup..."
+#rake db:initial_setup
 
 echo "Generating brand configs..."
-bundle exec rake brand_configs:generate_and_upload_all
+rake brand_configs:generate_and_upload_all
 
 echo "Starting Canvas LMS..."
 exec /sbin/tini -- "$@"

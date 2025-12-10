@@ -115,7 +115,7 @@ find \
     -delete
 EOF
 
-COPY ./defaults/* ${CANVAS_HOME}/config/
+COPY ./defaults/ ${CANVAS_HOME}/config/
 
 FROM ruby:${RUBY_VERSION}-alpine
 

@@ -24,7 +24,7 @@ fi
 
 
 #echo "Running database setup..."
-#rake db:initial_setup
+rake db:initial_setup
 
 echo "Generating brand configs..."
 rake brand_configs:generate_and_upload_all

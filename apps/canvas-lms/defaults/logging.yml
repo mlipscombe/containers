@@ -1,6 +1,6 @@
 production: &production
   log_context: true
-  log_level: info
+  log_level: <%= ENV.fetch('CANVAS_LOG_LEVEL', 'error') %>
 
 development:
   <<: *production

@@ -13,10 +13,6 @@ variable "SOURCE" {
   default = "https://github.com/instructure/canvas-lms"
 }
 
-variable "NEEDS_DISK_SPACE" {
-  default = "true"
-}
-
 group "default" {
   targets = ["image-local"]
 }

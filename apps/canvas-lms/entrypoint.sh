@@ -16,6 +16,21 @@ if [[ -z "${CANVAS_JWT_ENCRYPTION_KEY}" ]]; then
     export CANVAS_JWT_ENCRYPTION_KEY
 fi
 
+
+if [[ -z "${CANVAS_RCE_ENCRYPTION_SECRET}" ]]; then
+    echo "WARNING: CANVAS_RCE_ENCRYPTION_SECRET is not set. Using a temporary, randomly generated 32-character key. Do NOT use this in production."
+    CANVAS_RCE_ENCRYPTION_SECRET="$(generate_temp_key)"
+    export CANVAS_RCE_ENCRYPTION_SECRET
+fi
+
+
+if [[ -z "${CANVAS_RCE_SIGNING_SECRET}" ]]; then
+    echo "WARNING: CANVAS_RCE_SIGNING_SECRET is not set. Using a temporary, randomly generated 32-character key. Do NOT use this in production."
+    CANVAS_RCE_SIGNING_SECRET="$(generate_temp_key)"
+    export CANVAS_RCE_SIGNING_SECRET
+fi
+
+
 if [[ -z "${CANVAS_LTI_SIGNING_SECRET}" ]]; then
     echo "WARNING: CANVAS_LTI_SIGNING_SECRET is not set. Using a temporary, randomly generated 32-character key. Do NOT use this in production."
     CANVAS_LTI_SIGNING_SECRET="$(generate_temp_key)"

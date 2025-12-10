@@ -2,8 +2,8 @@ production: &production
   "app-canvas/data/secrets":
     data:
       canvas_security:
-        encryption_secret: <%= ENV["CANVAS_ENCRYPTION_KEY"] %>
-        signing_secret: <%= ENV["CANVAS_JWT_ENCRYPTION_KEY"] %>
+        encryption_secret: <%= ENV["CANVAS_RCE_ENCRYPTION_SECRET"] %>
+        signing_secret: <%= ENV["CANVAS_RCE_SIGNING_SECRET"] %>
       lti_platform_storage:
         signing_secret: <%= ENV["CANVAS_LTI_SIGNING_SECRET"] %>
 

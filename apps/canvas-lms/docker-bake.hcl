@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=instructure/canvas-lms versioning=loose
-  default = "2026-01-28.22"
+  default = "2026-01-28"
 }
 
 variable "SOURCE" {

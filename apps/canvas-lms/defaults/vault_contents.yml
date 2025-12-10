@@ -2,10 +2,10 @@ production: &production
   "app-canvas/data/secrets":
     data:
       canvas_security:
-        encryption_secret: <%= ENV.fetch('CANVAS_SECURITY_ENCRYPTION_SECRET') %>
-        signing_secret: <%= ENV.fetch('CANVAS_SECURITY_SIGNING_SECRET') %>
+        encryption_secret: <%= ENV["CANVAS_ENCRYPTION_KEY"] %>
+        signing_secret: <%= ENV["CANVAS_JWT_ENCRYPTION_KEY"] %>
       lti_platform_storage:
-        signing_secret: <%= ENV.fetch('CANVAS_LTI_PLATFORM_STORAGE_SIGNING_SECRET') %>
+        signing_secret: <%= ENV["CANVAS_LTI_SIGNING_SECRET"] %>
 
 test:
   <<: *production

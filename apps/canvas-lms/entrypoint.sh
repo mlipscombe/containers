@@ -1,21 +1,25 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-for file in /usr/src/nginx/{,**/}*.erb; do
-  if [ -f "$file" ]; then
-    # don't overwrite an existing destination file
-    if [ ! -e "${file%.*}" ]; then
-      erb -T- "$file" > "${file%.*}"
-      echo "${file%.*}: generated."
-    else
-      >&2 echo "${file%.*}: SKIPPED! refusing to overwrite existing file."
-    fi
-  fi
-done
+generate_temp_key() {
+    tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 32
+}
 
-bundle exec rake db:initial_setup
-bundle exec rake brand_configs:generate_and_upload_all
+if [[ -z "${CANVAS_ENCRYPTION_KEY}" ]]; then
+    echo "WARNING: CANVAS_ENCRYPTION_KEY is not set. Using a temporary, randomly generated 32-character key. Do NOT use this in production."
+    CANVAS_ENCRYPTION_KEY="$(generate_temp_key)"
+    export CANVAS_ENCRYPTION_KEY
+fi
 
-ln -sf /proc/self/fd/1 /usr/src/app/log/production.log
+if [[ -z "${CANVAS_JWT_ENCRYPTION_KEY}" ]]; then
+    echo "WARNING: CANVAS_JWT_ENCRYPTION_KEY is not set. Using a temporary, randomly generated 32-character key. Do NOT use this in production."
+    CANVAS_JWT_ENCRYPTION_KEY="$(generate_temp_key)"
+    export CANVAS_JWT_ENCRYPTION_KEY
+fi
 
-exec sudo -E /usr/sbin/nginx -c /usr/src/nginx/nginx.conf
+if [[ -z "${CANVAS_LTI_SIGNING_SECRET}" ]]; then
+    echo "WARNING: CANVAS_LTI_SIGNING_SECRET is not set. Using a temporary, randomly generated 32-character key. Do NOT use this in production."
+    CANVAS_LTI_SIGNING_SECRET="$(generate_temp_key)"
+    export CANVAS_LTI_SIGNING_SECRET
+fi
+
+exec /sbin/tini -- "$@"

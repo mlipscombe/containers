@@ -2,7 +2,7 @@ production: &production
   encryption_key: <%= ENV["CANVAS_ENCRYPTION_KEY"] %>
   jwt_encryption_keys:
     - <%= ENV["CANVAS_JWT_ENCRYPTION_KEY"] %>
-  lti_iss: <%= ENV["CANVAS_LTI_ISS"] %>
+  lti_iss: <%= ENV.fetch('CANVAS_LTI_ISS', 'http://localhost:3000') %>
 
 development:
   <<: *production

@@ -1,107 +1,168 @@
 # syntax=docker/dockerfile:1
 
-ARG RUBY=3.4
+ARG NODE_VERSION=lts
+ARG RUBY_VERSION=3.4
+ARG CANVAS_HOME=/opt/canvas
 ARG VERSION
 
-FROM instructure/ruby-passenger:$RUBY-jammy
-LABEL maintainer="Instructure"
+FROM node:${NODE_VERSION}-alpine AS node
 
-ARG RUBY
+RUN corepack disable yarn
+
+FROM ruby:${RUBY_VERSION}-alpine AS builder
+
+ARG CANVAS_HOME
 ARG VERSION
-ARG POSTGRES_CLIENT=14
-ENV APP_HOME=/usr/src/app/
+
 ENV RAILS_ENV=production
+ENV COMPILE_ASSETS_BRAND_CONFIGS=0
 ENV SASS_STYLE=compressed
-ENV RAILS_LOAD_ALL_LOCALES=1
-ENV NGINX_MAX_UPLOAD_SIZE=10g
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US.UTF-8
-ENV LC_CTYPE=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
-ARG CANVAS_RAILS=8.0
-ENV CANVAS_RAILS=${CANVAS_RAILS}
+
+COPY --link --from=node /usr/local/bin /usr/local/bin
+COPY --link --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN apk add --no-cache \
+    alpine-sdk \
+    bash \
+    libidn-dev \
+    libpq-dev \
+    python3 \
+    shared-mime-info \
+    sqlite-dev \
+    tzdata \
+    xmlsec-dev \
+    yaml-dev
+
+ADD --link https://api.github.com/repos/instructure/canvas-lms/git/refs/heads/stable/${VERSION} /dev/null
+ADD --link https://api.github.com/repos/instructure/QTIMigrationTool/git/refs/heads/ /dev/null
+
+RUN <<EOF
+git clone -b stable/${VERSION} --depth 1 https://github.com/instructure/canvas-lms.git ${CANVAS_HOME}
+# https://github.com/instructure/QTIMigrationTool/wiki
+git clone --depth 1 https://github.com/instructure/QTIMigrationTool.git ${CANVAS_HOME}/vendor/QTIMigrationTool
+chmod a+x ${CANVAS_HOME}/vendor/QTIMigrationTool/migrate.py
+EOF
+
+WORKDIR ${CANVAS_HOME}
+
+RUN <<EOF
+corepack enable yarn
+
+# To address potential issues with `Error loading shared library ld-linux-aarch64.so.1`,
+# Bundler is configured to build native extensions for the local environment by setting `bundle config set force_ruby_platform true`.
+bundle config set force_ruby_platform true
+bundle install
+
+rails canvas:compile_assets
+
+rm -rf \
+    .claude \
+    .devcontainer \
+    .github \
+    .storybook \
+    .vscode \
+    build \
+    doc \
+    docker-compose \
+    hooks \
+    inst-cli \
+    jest \
+    node_modules \
+    packages \
+    patches \
+    ui \
+    ui-build
+rm \
+    .dive-ci \
+    .dockerignore \
+    .editorconfig \
+    .git-blame-ignore-revs \
+    .gitmessage \
+    .i18nignore \
+    .i18nrc \
+    .irbrc \
+    .npmrc \
+    .nvmrc \
+    .rspec \
+    .sentryignore \
+    .stylelintrc \
+    config/*.yml.* \
+    COPYRIGHT \
+    docker-compose* \
+    Dockerfile* \
+    Jenkinsfile* \
+    LICENSE \
+    log/* \
+    yarn.lock
+rm \
+    .*.js \
+    .*.json \
+    .*.yml \
+    *.js \
+    *.json \
+    *.md \
+    *.ts
+find \
+    -type d \
+    -name .git \
+    -exec rm -rf {} +
+find \
+    -type f \
+    \( \
+        -name .gitignore \
+    -or -name .keep \
+    \) \
+    -delete
+EOF
+
+COPY ./defaults/* ${CANVAS_HOME}/config/
+
+FROM ruby:${RUBY_VERSION}-alpine
+
+ARG CANVAS_HOME
+ARG CANVAS_GROUP_ID=568
+ARG CANVAS_USER_ID=568
+ARG CANVAS_USER=canvas
+ARG RAILS_PORT=3000
 
 ENV CANVAS_LMS_STATS_COLLECTION=opt_out
 
-ENV NODE_MAJOR=20
-ENV GEM_HOME=/home/docker/.gem/$RUBY
-ENV PATH=${APP_HOME}bin:$GEM_HOME/bin:$PATH
-ENV BUNDLE_APP_CONFIG=/home/docker/.bundle
+ENV BINDING=0.0.0.0
+ENV PORT=${RAILS_PORT}
 
-WORKDIR $APP_HOME
-
-USER root
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_${NODE_MAJOR}.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-    && curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarn.gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && printf 'path-exclude /usr/share/doc/*\npath-exclude /usr/share/man/*' > /etc/dpkg/dpkg.cfg.d/01_nodoc \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-    && add-apt-repository ppa:git-core/ppa -ny \
-    && apt-get update -qq \
-    && apt-get install -qqy --no-install-recommends \
-    nodejs \
-    libxmlsec1-dev \
-    python3-lxml \
-    python-is-python3 \
-    libicu-dev \
-    libidn11-dev \
-    parallel \
-    postgresql-client-$POSTGRES_CLIENT \
+RUN <<EOF
+apk add --no-cache \
+    bash \
+    brotli-libs \
+    file \
+    icu-libs \
+    libidn \
+    libpq \
+    py3-lxml \
+    python3 \
+    shared-mime-info \
+    sqlite-libs \
+    tini \
     tzdata \
-    unzip \
-    pbzip2 \
-    \
-    git \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /home/docker/.gem/ruby/$RUBY_MAJOR.0
+    xmlsec \
+    yaml
 
-RUN gem install bundler --no-document -v 2.5.10 \
-    && find $GEM_HOME ! -user docker | xargs chown docker:docker
-RUN npm install -g npm@9.8.1 && npm cache clean --force
+addgroup -g ${CANVAS_GROUP_ID} ${CANVAS_USER}
+adduser -D -G ${CANVAS_USER} -u ${CANVAS_USER_ID} -h ${CANVAS_HOME} ${CANVAS_USER}
+EOF
 
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable && corepack prepare yarn@1.19.1 --activate
+COPY --link --from=builder --chown=${CANVAS_USER_ID} ${GEM_HOME} ${GEM_HOME}
+COPY --link --from=builder --chown=${CANVAS_USER_ID} ${CANVAS_HOME} ${CANVAS_HOME}
 
-# Download and extract Canvas LMS release
-RUN mkdir -p $APP_HOME \
-    && if echo "${VERSION}" | grep -q "^prod\|^stable$"; then \
-    DOWNLOAD_URL="https://github.com/instructure/canvas-lms/archive/refs/heads/${VERSION}.tar.gz"; \
-    else \
-    DOWNLOAD_URL="https://github.com/instructure/canvas-lms/archive/refs/tags/release/${VERSION}.tar.gz"; \
-    fi \
-    && curl -fsSL "${DOWNLOAD_URL}" \
-    | tar xzf - -C $APP_HOME --strip-components=1 \
-    && chown -R docker:docker $APP_HOME
-
-# Add QTI migration tool
-RUN mkdir -p $APP_HOME/vendor/QTIMigrationTool \
-    && curl -fsSL https://github.com/instructure/QTIMigrationTool/archive/refs/heads/master.tar.gz \
-    | tar xzf - -C $APP_HOME/vendor/QTIMigrationTool --strip-components=1 \
-    && chown -R docker:docker $APP_HOME/vendor/QTIMigrationTool \
-    && chmod +x $APP_HOME/vendor/QTIMigrationTool/migrate.py
-
-COPY . /
+COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-USER docker
+WORKDIR ${CANVAS_HOME}
 
-RUN mkdir -p tmp/files tmp/pids public/assets app/stylesheets/brandable_css_brands \
-    && touch app/stylesheets/_brandable_variables_defaults_autogenerated.scss
+USER ${CANVAS_USER}
 
-ENV COMPILE_ASSETS_BRAND_CONFIGS=0
-ENV COMPILE_ASSETS_NPM_INSTALL=0
-RUN unset RUBY && bundle config --global build.nokogiri --use-system-libraries && \
-    bundle config --global build.ffi --enable-system-libffi && \
-    bundle install
-RUN yarn install --frozen-lockfile || yarn install --frozen-lockfile --network-concurrency 1 && \
-    bin/rails canvas:compile_assets --trace && \
-    rm -rf node_modules
-
-RUN cp /defaults/* /usr/src/app/config/
+EXPOSE ${RAILS_PORT}
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/tini" "--" "/entrypoint.sh"]
+
+CMD ["rails", "server"]

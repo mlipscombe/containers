@@ -1,0 +1,9 @@
+production: &production
+  log_context: true
+  log_level: info
+
+development:
+  <<: *production
+
+test:
+  <<: *production

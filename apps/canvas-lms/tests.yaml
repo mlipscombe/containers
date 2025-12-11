@@ -1,5 +1,5 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/goss-org/goss/master/docs/schema.yaml
-port:
-  tcp:3000:
-    listening: true
+process:
+  supervisord:
+    running: true

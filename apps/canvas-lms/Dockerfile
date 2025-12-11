@@ -146,7 +146,8 @@ apk add --no-cache \
     tini \
     tzdata \
     xmlsec \
-    yaml
+    yaml \
+    imagemagick
 
 addgroup -g ${CANVAS_GROUP_ID} ${CANVAS_USER}
 adduser -D -G ${CANVAS_USER} -u ${CANVAS_USER_ID} -h ${CANVAS_HOME} ${CANVAS_USER}

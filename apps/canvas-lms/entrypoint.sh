@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 generate_temp_key() {
     tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 32
@@ -37,12 +38,4 @@ if [[ -z "${CANVAS_LTI_SIGNING_SECRET}" ]]; then
     export CANVAS_LTI_SIGNING_SECRET
 fi
 
-
-#echo "Running database setup..."
-rake db:initial_setup
-
-echo "Generating brand configs..."
-rake brand_configs:generate_and_upload_all
-
-echo "Starting Canvas LMS..."
 exec /sbin/tini -- "$@"

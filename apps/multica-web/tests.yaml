@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goss-org/goss/master/docs/schema.yaml
+port:
+  tcp:3000:
+    listening: true
+http:
+  http://localhost:3000/runtime-config.js:
+    status: 200
+    body:
+      - __MULTICA_RUNTIME_CONFIG__

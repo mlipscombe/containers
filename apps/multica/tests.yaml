@@ -1,0 +1,18 @@
+---
+schemaVersion: "2.0.0"
+fileExistenceTests:
+  - name: server
+    path: /app/server
+    shouldExist: true
+  - name: multica
+    path: /app/multica
+    shouldExist: true
+  - name: migrate
+    path: /app/migrate
+    shouldExist: true
+  - name: migrations directory
+    path: /app/migrations
+    shouldExist: true
+metadataTest:
+  exposedPorts:
+    - "8080"

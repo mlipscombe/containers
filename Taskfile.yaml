@@ -17,8 +17,8 @@ tasks:
     desc: Build and Test an app via Docker Buildx
     dir: "{{.WORK_DIR}}"
     cmds:
-      - rsync -a --ignore-existing --progress {{.ROOT_DIR}}/include/ {{.WORK_DIR}}
       - rsync -a --ignore-existing --progress {{.ROOT_DIR}}/apps/{{.APP}}/ {{.WORK_DIR}}
+      - rsync -a --ignore-existing --progress {{.ROOT_DIR}}/include/ {{.WORK_DIR}}
       - docker buildx bake --no-cache --metadata-file docker-bake.json --load
       - |
         IMAGE=$(jq --raw-output '."image-local"."image.name"' docker-bake.json)

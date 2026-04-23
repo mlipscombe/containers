@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1
+
+ARG BASE_IMAGE=vllm/vllm-openai
+ARG BASE_TAG=v0.19.1
+FROM ${BASE_IMAGE}:${BASE_TAG}
+
+ARG VERSION
+ARG LS_REPO=napmany/llmsnap
+
+# Set default UID/GID arguments
+ARG UID=10001
+ARG GID=10001
+ARG USER_HOME=/app
+
+# Add user/group
+ENV HOME=$USER_HOME
+RUN if [ $UID -ne 0 ]; then \
+      if [ $GID -ne 0 ]; then \
+        groupadd --system --gid $GID app; \
+      fi; \
+      useradd --system --uid $UID --gid $GID \
+      --home $USER_HOME app; \
+    fi
+
+# Handle paths
+RUN mkdir --parents $HOME /app
+RUN chown --recursive $UID:$GID $HOME /app
+
+# Switch user
+USER $UID:$GID
+
+WORKDIR /app
+
+# Add /app to PATH
+ENV PATH="/app:${PATH}"
+
+RUN \
+    curl -LO "https://github.com/${LS_REPO}/releases/download/v${VERSION}/llmsnap_${VERSION}_linux_amd64.tar.gz" && \
+    tar -zxf "llmsnap_${VERSION}_linux_amd64.tar.gz" && \
+    rm "llmsnap_${VERSION}_linux_amd64.tar.gz"
+
+COPY --chown=$UID:$GID ./defaults/config.yaml /app/config.yaml
+
+HEALTHCHECK CMD curl -f http://localhost:8080/ || exit 1
+ENTRYPOINT [ "/app/llmsnap", "-config", "/app/config.yaml" ]

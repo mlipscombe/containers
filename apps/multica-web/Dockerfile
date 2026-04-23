@@ -20,8 +20,7 @@ RUN git clone --depth 1 --branch "${VERSION}" https://github.com/multica-ai/mult
 
 COPY ./overrides/ /tmp/overrides/
 
-RUN grep -F 'const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;' "/src/apps/web/app/(auth)/login/page.tsx" \
-    && grep -F 'apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}' /src/apps/web/components/web-providers.tsx \
+RUN grep -F 'apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}' /src/apps/web/components/web-providers.tsx \
     && grep -F 'const remoteApiUrl = process.env.REMOTE_API_URL || "http://localhost:8080";' /src/apps/web/next.config.ts \
     && cp -R /tmp/overrides/. /src/ \
     && pnpm install --frozen-lockfile \

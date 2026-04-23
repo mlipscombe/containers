@@ -1,12 +1,15 @@
 "use client";
 
+import { Suspense, useMemo } from "react";
 import { CoreProvider } from "@multica/core/platform";
+import packageJson from "../package.json";
 import { deriveWsUrl, getRuntimeConfig } from "@/lib/runtime-config";
 import { WebNavigationProvider } from "@/platform/navigation";
 import {
   setLoggedInCookie,
   clearLoggedInCookie,
 } from "@/features/auth/auth-cookie";
+import { PageviewTracker } from "./pageview-tracker";
 
 // Legacy token in localStorage → keep this session in token mode so users who
 // logged in before the cookie-auth migration stay authed. They migrate to
@@ -26,6 +29,15 @@ function hasLegacyToken(): boolean {
 export function WebProviders({ children }: { children: React.ReactNode }) {
   const cookieAuth = !hasLegacyToken();
   const runtimeConfig = getRuntimeConfig();
+  // Stable identity reference so downstream effects keyed on it don't see a
+  // new object on every parent render.
+  const identity = useMemo(
+    () => ({
+      platform: "web",
+      version: process.env.NEXT_PUBLIC_APP_VERSION || packageJson.version || "dev",
+    }),
+    [],
+  );
 
   return (
     <CoreProvider
@@ -34,7 +46,13 @@ export function WebProviders({ children }: { children: React.ReactNode }) {
       cookieAuth={cookieAuth}
       onLogin={setLoggedInCookie}
       onLogout={clearLoggedInCookie}
+      identity={identity}
     >
+      {/* Suspense boundary is required by Next.js for useSearchParams in
+          a client component mounted this high in the tree. */}
+      <Suspense fallback={null}>
+        <PageviewTracker />
+      </Suspense>
       <WebNavigationProvider>{children}</WebNavigationProvider>
     </CoreProvider>
   );

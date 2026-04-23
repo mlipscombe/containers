@@ -8,8 +8,8 @@ ARG VERSION
 ARG LS_REPO=napmany/llmsnap
 
 # Set default UID/GID arguments
-ARG UID=10001
-ARG GID=10001
+ARG UID=568
+ARG GID=568
 ARG USER_HOME=/app
 
 # Add user/group

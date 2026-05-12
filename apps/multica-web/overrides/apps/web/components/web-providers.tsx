@@ -1,7 +1,10 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { CoreProvider } from "@multica/core/platform";
+import { createBrowserCookieLocaleAdapter } from "@multica/core/i18n/browser";
+import type { LocaleResources, SupportedLocale } from "@multica/core/i18n";
+import packageJson from "../package.json";
 import { deriveWsUrl, getRuntimeConfig } from "@/lib/runtime-config";
 import { WebNavigationProvider } from "@/platform/navigation";
 import {
@@ -25,9 +28,30 @@ function hasLegacyToken(): boolean {
   }
 }
 
-export function WebProviders({ children }: { children: React.ReactNode }) {
+// Build-time version preferred (CI sets NEXT_PUBLIC_APP_VERSION to a git tag
+// or sha so different deploys are distinguishable in server logs); fall back
+// to the package.json version so local dev still reports something useful.
+const WEB_VERSION =
+  process.env.NEXT_PUBLIC_APP_VERSION || packageJson.version || "dev";
+
+export function WebProviders({
+  children,
+  locale,
+  resources,
+}: {
+  children: React.ReactNode;
+  locale: SupportedLocale;
+  resources: Record<string, LocaleResources>;
+}) {
   const cookieAuth = !hasLegacyToken();
   const runtimeConfig = getRuntimeConfig();
+  // Stable identity reference so downstream effects keyed on it don't see a
+  // new object on every parent render.
+  const identity = useMemo(
+    () => ({ platform: "web", version: WEB_VERSION }),
+    [],
+  );
+  const localeAdapter = useMemo(() => createBrowserCookieLocaleAdapter(), []);
 
   return (
     <CoreProvider
@@ -36,6 +60,10 @@ export function WebProviders({ children }: { children: React.ReactNode }) {
       cookieAuth={cookieAuth}
       onLogin={setLoggedInCookie}
       onLogout={clearLoggedInCookie}
+      identity={identity}
+      locale={locale}
+      resources={resources}
+      localeAdapter={localeAdapter}
     >
       {/* Suspense boundary is required by Next.js for useSearchParams in
           a client component mounted this high in the tree. */}

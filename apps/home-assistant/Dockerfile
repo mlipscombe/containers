@@ -76,12 +76,12 @@ RUN \
     build-base \
     libffi-dev \
     && \
-    HA_UV_VERSION=$(curl -fsSL "https://raw.githubusercontent.com/home-assistant/core/refs/tags/${VERSION}/Dockerfile" | grep 'install uv==' | sed 's|.*install uv==||') \
-    && \
-    pip install uv==${HA_UV_VERSION} \
-    && \
     curl -fsSL "https://github.com/home-assistant/core/archive/${VERSION}.tar.gz" \
     | tar xzf - -C /tmp --strip-components=1 \
+    && \
+    HA_UV_VERSION=$(awk -F'==' '/^uv==/{print $2}' /tmp/requirements.txt) \
+    && \
+    pip install uv==${HA_UV_VERSION} \
     && \
     HA_BASE=$(curl -fsSL "https://raw.githubusercontent.com/home-assistant/core/refs/tags/${VERSION}/.github/workflows/builder.yml" | grep "BASE_IMAGE_VERSION: " | cut -d '"' -f2) \
     && \

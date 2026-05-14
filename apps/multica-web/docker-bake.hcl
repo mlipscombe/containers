@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=multica-ai/multica
-  default = "v0.2.32"
+  default = "v0.3.0"
 }
 
 variable "SOURCE" {

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM docker.io/library/node:22-alpine AS builder
+FROM docker.io/library/node:24-alpine AS builder
 
 ARG VERSION
 
@@ -26,7 +26,7 @@ RUN grep -F 'apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}' /src/apps/web/compone
     && pnpm install --frozen-lockfile \
     && pnpm --filter @multica/web build
 
-FROM docker.io/library/node:22-alpine AS runner
+FROM docker.io/library/node:24-alpine AS runner
 
 RUN apk add --no-cache catatonit
 

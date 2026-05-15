@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG BASE_IMAGE=vllm/vllm-openai
-ARG BASE_TAG=v0.20.2
+ARG BASE_TAG=v0.21.0
 FROM ${BASE_IMAGE}:${BASE_TAG}
 
 ARG VERSION

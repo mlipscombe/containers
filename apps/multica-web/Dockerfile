@@ -21,7 +21,7 @@ RUN git clone --depth 1 --branch "${VERSION}" https://github.com/multica-ai/mult
 COPY ./overrides/ /tmp/overrides/
 
 RUN grep -F 'apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}' /src/apps/web/components/web-providers.tsx \
-    && grep -F 'const remoteApiUrl = process.env.REMOTE_API_URL || "http://localhost:8080";' /src/apps/web/next.config.ts \
+    && grep -F 'const remoteApiUrl = resolveRemoteApiUrl(process.env);' /src/apps/web/next.config.ts \
     && cp -R /tmp/overrides/. /src/ \
     && pnpm install --frozen-lockfile \
     && pnpm --filter @multica/web build

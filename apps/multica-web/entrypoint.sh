@@ -6,7 +6,6 @@ mkdir -p /config
 
 node - <<'EOF' > /config/runtime-config.js
 const config = {
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_URL || "",
   googleClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
   wsUrl: process.env.NEXT_PUBLIC_WS_URL || "",
 };

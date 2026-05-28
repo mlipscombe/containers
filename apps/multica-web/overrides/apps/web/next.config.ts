@@ -30,6 +30,9 @@ const nextConfig: NextConfig = {
   ...(allowedDevOrigins && allowedDevOrigins.length > 0
     ? { allowedDevOrigins }
     : {}),
+  experimental: {
+    proxyClientMaxBodySize: "1gb",
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 80, 85],

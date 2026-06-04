@@ -21,10 +21,40 @@ jobs:
           include_only_directories: true
           max_depth: 1
 
-  build:
+  changed:
     if: ${{ needs.prepare.outputs.changed-files != '[]' }}
-    name: Build ${{ matrix.app }}
+    name: Get Changed Apps
     needs: ["prepare"]
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.apps.outputs.apps }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Get Apps
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        id: apps
+        env:
+          APPS: ${{ join(fromJSON(needs.prepare.outputs.changed-files), ' ') }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const { APPS } = process.env;
+            const appsToBuild = [...new Set(APPS.split(' ').filter(Boolean))]
+              .filter((app) => fs.existsSync(path.resolve(process.cwd(), 'apps', app, 'docker-bake.hcl')));
+            core.setOutput('apps', JSON.stringify(appsToBuild));
+            console.log('apps:', JSON.stringify(appsToBuild, null, 2));
+            core.summary.addHeading('Apps to build:').addList(appsToBuild).write();
+
+  build:
+    if: ${{ needs.changed.outputs.apps != '[]' }}
+    name: Build ${{ matrix.app }}
+    needs: ["changed"]
     uses: ./.github/workflows/app-builder.yaml
     permissions:
       contents: read
@@ -32,7 +62,7 @@ jobs:
     secrets: inherit
     strategy:
       matrix:
-        app: ${{ fromJSON(needs.prepare.outputs.changed-files) }}
+        app: ${{ fromJSON(needs.changed.outputs.apps) }}
       fail-fast: false
       max-parallel: 4
     with:

@@ -21,17 +21,26 @@ tasks:
       - rsync -a --ignore-existing --progress {{.ROOT_DIR}}/include/ {{.WORK_DIR}}
       - docker buildx bake --no-cache --metadata-file docker-bake.json --load
       - |
-        IMAGE=$(jq --raw-output '."image-local"."image.name"' docker-bake.json)
-        case "{{.TEST_TOOL}}" in
-            "cst")
-                container-structure-test test --image "${IMAGE}" --config tests.yaml
-                ;;
-            "goss")
-                {{.BIN_DIR}}/goss/dgoss run "${IMAGE}"
-                ;;
-        esac
-        echo "To run this image, use the following command:"
-        echo "docker run --rm -it ${IMAGE}"
+        if [ -f "{{.ROOT_DIR}}/apps/{{.APP}}/images.yaml" ]; then
+            IMAGES=$(yq --output-format=json --indent=0 '.images[]' "{{.ROOT_DIR}}/apps/{{.APP}}/images.yaml")
+        else
+            IMAGES=$(jq --null-input --compact-output --arg name "{{.APP}}" '{name: $name, target: "image", tests: "tests.yaml"}')
+        fi
+
+        while read -r IMAGE_CONFIG; do
+            LOCAL_TARGET=$(jq --raw-output '(.localTarget // ((.target // "image") + "-local"))' <<< "${IMAGE_CONFIG}")
+            TEST_CONFIG=$(jq --raw-output '(.tests // "tests.yaml")' <<< "${IMAGE_CONFIG}")
+            IMAGE=$(jq --raw-output --arg target "${LOCAL_TARGET}" '.[$target]."image.name"' docker-bake.json)
+
+            if yq --exit-status '.schemaVersion' "${TEST_CONFIG}" &>/dev/null; then
+                container-structure-test test --image "${IMAGE}" --config "${TEST_CONFIG}"
+            else
+                GOSS_FILE="${TEST_CONFIG}" {{.BIN_DIR}}/goss/dgoss run "${IMAGE}"
+            fi
+
+            echo "To run this image, use the following command:"
+            echo "docker run --rm -it ${IMAGE}"
+        done <<< "${IMAGES}"
       - defer: rm -rf {{.WORK_DIR}}
     env:
       GOSS_FILE: tests.yaml
@@ -39,8 +48,6 @@ tasks:
       GOSS_PATH: "{{.BIN_DIR}}/goss/goss"
     vars:
       APP: "{{index .MATCH 0}}"
-      TEST_TOOL:
-        sh: yq --exit-status '.schemaVersion' {{.ROOT_DIR}}/apps/{{.APP}}/tests.yaml &>/dev/null && echo "cst" || echo "goss"
       WORK_DIR:
         sh: mktemp -d
     preconditions:

@@ -11,13 +11,13 @@ import { getRequestLocale } from "@/lib/request-locale";
 import "./globals.css";
 
 // Font stack: Inter for Latin UI text + system Chinese fonts for zh content.
-// Desktop app uses the same stack via apps/desktop/src/renderer/src/globals.css —
+// Desktop app uses the same stack via apps/desktop/src/renderer/src/globals.css -
 // keep the CJK fallback tail in sync across both files. The Inter primary family
 // differs by design: next/font produces `__Inter_xxx` (with a synthetic size-adjusted
 // fallback face to prevent FOUT layout shift); desktop uses fontsource's "Inter Variable".
 // Both resolve to Inter glyphs, so rendering is identical in practice.
-// Currently covers English + Simplified Chinese. When ja/ko i18n lands, extend
-// the tail with Hiragino Kaku Gothic ProN / Yu Gothic / Apple SD Gothic Neo / Malgun Gothic.
+// Currently covers English + Simplified Chinese. Browser fallback handles
+// Japanese and Korean content until their font stacks are tuned explicitly.
 // Per-character fallback: Latin chars render with Inter, Chinese chars with
 // PingFang SC (macOS) / Microsoft YaHei (Windows) / Noto Sans CJK SC (Linux).
 const inter = Inter({
@@ -72,7 +72,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.multica.ai"),
   title: {
-    default: "Multica — Project Management for Human + Agent Teams",
+    default: "Multica - Project Management for Human + Agent Teams",
     template: "%s | Multica",
   },
   description:
@@ -106,6 +106,8 @@ export const metadata: Metadata = {
 // expects a region-flavoured tag for accessibility tooling and CJK fallback.
 const HTML_LANG: Record<SupportedLocale, string> = {
   en: "en",
+  ja: "ja",
+  ko: "ko",
   "zh-Hans": "zh-CN",
 };
 

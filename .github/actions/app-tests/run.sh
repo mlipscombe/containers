@@ -3,11 +3,12 @@ set -Eeuo pipefail
 
 APP="${1:?}"
 IMAGE="${2:?}"
+CONFIG="${3:?}"
 
 if [[ -x "$(command -v container-structure-test)" ]]; then
-    container-structure-test test --image "${IMAGE}" --config "./apps/${APP}/tests.yaml"
+    container-structure-test test --image "${IMAGE}" --config "./apps/${APP}/${CONFIG}"
 elif [[ -x "$(command -v goss)" && -x "$(command -v dgoss)" ]]; then
-    export GOSS_FILE="./apps/${APP}/tests.yaml"
+    export GOSS_FILE="./apps/${APP}/${CONFIG}"
     export GOSS_OPTS="--retry-timeout 60s --sleep 1s"
     dgoss run "${IMAGE}"
 else

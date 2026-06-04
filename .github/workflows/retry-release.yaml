@@ -61,20 +61,48 @@ jobs:
         with:
           app: ${{ matrix.app }}
 
-      - name: Get Container Registry Version
+      - name: Get Application Images
+        id: app-images
+        uses: ./.github/actions/app-images
+        with:
+          app: ${{ matrix.app }}
+
+      - name: Get Container Registry Versions
         id: registry
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          IMAGES: ${{ steps.app-images.outputs.images }}
+          EXPECTED_VERSION: ${{ steps.app-options.outputs.version }}
         run: |
-          if ! version=$(regctl image inspect ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:rolling \
-              | jq --raw-output '.config.Labels["org.opencontainers.image.version"]' 2>/dev/null) || [[ -z "${version}" ]];
-          then
-              echo "Failed to get registry version for ${{ matrix.app }}"
-              exit 1
-          fi
-          echo "version=${version}" >> $GITHUB_OUTPUT
+          mismatch=false
 
-      - if: ${{ steps.app-options.outputs.version != steps.registry.outputs.version }}
+          {
+              echo 'summary<<EOF'
+              echo '| Container Name | Actual Version | Expected Version |'
+              echo '|----------------|----------------|------------------|'
+          } >> "${GITHUB_OUTPUT}"
+
+          while read -r image; do
+              if ! version=$(regctl image inspect "ghcr.io/${{ github.repository_owner }}/${image}:rolling" \
+                  | jq --raw-output '.config.Labels["org.opencontainers.image.version"]' 2>/dev/null) || [[ -z "${version}" ]];
+              then
+                  echo "Failed to get registry version for ${image}"
+                  exit 1
+              fi
+
+              if [[ "${version}" != "${EXPECTED_VERSION}" ]]; then
+                  mismatch=true
+              fi
+
+              echo "| \`${image}\` | \`${version}\` | \`${EXPECTED_VERSION}\` |" >> "${GITHUB_OUTPUT}"
+          done < <(jq --raw-output '.[].name' <<< "${IMAGES}")
+
+          {
+              echo 'EOF'
+              echo "mismatch=${mismatch}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - if: ${{ steps.registry.outputs.mismatch == 'true' }}
         name: Find Pull Request
         uses: juliangruber/find-pull-request-action@33d46d4ff90884bb23aaead16044125daaf733d8 # v1.11.0
         id: find-pull-request
@@ -87,16 +115,15 @@ jobs:
         name: Retry Release
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          SUMMARY: ${{ steps.registry.outputs.summary }}
         run: | # zizmor: ignore[template-injection]
           gh workflow run release.yaml \
-              --repo ${{ github.repository }} \
-              -f app=${{ matrix.app }} \
+              --repo "${{ github.repository }}" \
+              -f app="${{ matrix.app }}" \
               -f release=true
 
           {
               echo '## Retrying Release'
               echo
-              echo '| Container Name | Actual Version | Expected Version |'
-              echo '|----------------|------------------|----------------|'
-              echo '| `${{ matrix.app }}` | `${{ steps.registry.outputs.version }}` | `${{ steps.app-options.outputs.version }}` |'
-          } >> $GITHUB_STEP_SUMMARY
+              echo "${SUMMARY}"
+          } >> "${GITHUB_STEP_SUMMARY}"

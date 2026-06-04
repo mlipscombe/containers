@@ -41,15 +41,30 @@ jobs:
     outputs:
       apps: ${{ steps.apps.outputs.apps }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
       - name: Get Apps
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         id: apps
         env:
           APPS: ${{ github.event_name == 'workflow_dispatch' && inputs.app || join(fromJSON(needs.prepare.outputs.changed-files), ' ') }}
+          EVENT_NAME: ${{ github.event_name }}
         with:
           script: |
+            const fs = require('fs');
+            const path = require('path');
+
             const { APPS } = process.env;
-            const appsToBuild = APPS.split(' ').filter(Boolean);
+            const appsToBuild = [...new Set(APPS.split(' ').filter(Boolean))]
+              .filter((app) => fs.existsSync(path.resolve(process.cwd(), 'apps', app, 'docker-bake.hcl')));
+
+            if (process.env.EVENT_NAME === 'workflow_dispatch' && appsToBuild.length === 0) {
+              core.setFailed(`Application ${APPS} does not exist`);
+            }
+
             core.setOutput('apps', JSON.stringify(appsToBuild));
             console.log('apps:', JSON.stringify(appsToBuild, null, 2));
             core.summary.addHeading('Apps to build:').addList(appsToBuild).write();

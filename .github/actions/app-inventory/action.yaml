@@ -7,6 +7,9 @@ outputs:
   apps:
     description: Application Inventory
     value: ${{ steps.inventory.outputs.apps }}
+  images:
+    description: Container image inventory
+    value: ${{ steps.inventory.outputs.images }}
 
 runs:
   using: composite
@@ -32,6 +35,34 @@ runs:
               }
           }
 
+          function imagesForApp(app) {
+              const configPath = path.resolve(process.cwd(), 'apps', app, 'images.yaml');
+              if (!fs.existsSync(configPath)) {
+                  return [{ app, name: app, target: 'image', tests: 'tests.yaml' }];
+              }
+
+              const { execFileSync } = require('child_process');
+              const config = JSON.parse(execFileSync('yq', ['--output-format=json', '.', configPath], { encoding: 'utf8' }));
+              if (!Array.isArray(config.images) || config.images.length === 0) {
+                  throw new Error(`${configPath} must contain a non-empty images array`);
+              }
+
+              return config.images.map((image) => {
+                  if (!image.name) {
+                      throw new Error(`Every image in ${configPath} must include a name`);
+                  }
+
+                  return {
+                      app,
+                      name: image.name,
+                      target: image.target || 'image',
+                      tests: image.tests || 'tests.yaml',
+                  };
+              });
+          }
+
           const appsDirectory = path.resolve(process.cwd(), 'apps');
           const apps = scanDirectory(appsDirectory).sort();
+          const images = apps.flatMap(imagesForApp);
           core.setOutput('apps', JSON.stringify(apps));
+          core.setOutput('images', JSON.stringify(images));

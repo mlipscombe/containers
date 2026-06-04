@@ -3,3 +3,13 @@
 http:
   http://localhost:
     status: 200
+command:
+  caddy list-modules:
+    exit-status: 0
+    stdout:
+      - "(?m)^caddy\\.adapters\\.yaml$"
+      - "(?m)^dns\\.providers\\.cloudflare$"
+      - "(?m)^layer4$"
+      - "(?m)^layer4\\.handlers\\.proxy$"
+      - "(?m)^layer4\\.handlers\\.proxy_protocol$"
+      - "(?m)^layer4\\.handlers\\.tls$"

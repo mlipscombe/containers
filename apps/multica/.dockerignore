@@ -1,0 +1,8 @@
+# This app builds backend and web images from the same context.
+/*
+!Dockerfile
+!Dockerfile.web
+!entrypoint.sh
+!entrypoint.web.sh
+!overrides/
+!overrides/**

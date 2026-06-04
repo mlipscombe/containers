@@ -4,5 +4,5 @@
 !Dockerfile.web
 !entrypoint.sh
 !entrypoint.web.sh
-!overrides/
-!overrides/**
+!patches/
+!patches/**

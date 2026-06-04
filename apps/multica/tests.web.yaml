@@ -4,7 +4,7 @@ port:
   tcp:3000:
     listening: true
 http:
-  http://localhost:3000/runtime-config.js:
+  http://localhost:3000/:
     status: 200
     body:
-      - __MULTICA_RUNTIME_CONFIG__
+      - Multica

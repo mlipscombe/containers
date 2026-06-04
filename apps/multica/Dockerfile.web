@@ -5,12 +5,10 @@ FROM docker.io/library/node:24-alpine AS builder
 ARG VERSION
 
 ENV NEXT_PUBLIC_API_URL="" \
-    NEXT_PUBLIC_GOOGLE_CLIENT_ID="" \
-    NEXT_PUBLIC_WS_URL="" \
     REMOTE_API_URL="http://backend:8080" \
     STANDALONE="true"
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git patch
 
 RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
 
@@ -18,11 +16,14 @@ WORKDIR /src
 
 RUN git clone --depth 1 --branch "${VERSION}" https://github.com/multica-ai/multica.git .
 
-COPY ./overrides/ /tmp/overrides/
+COPY ./patches/ /tmp/patches/
 
 RUN grep -F 'apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}' /src/apps/web/components/web-providers.tsx \
     && grep -F 'const remoteApiUrl = resolveRemoteApiUrl(process.env);' /src/apps/web/next.config.ts \
-    && cp -R /tmp/overrides/. /src/ \
+    && for patch_file in /tmp/patches/*.patch; do patch -p1 --forward --fuzz=3 < "$patch_file" || true; done \
+    && grep -F 'proxyClientMaxBodySize: "1gb"' /src/apps/web/next.config.ts \
+    && grep -F 'variable: "--font-inter"' /src/apps/web/app/layout.tsx \
+    && grep -F -- '--font-sans: var(--font-inter)' /src/apps/web/app/globals.css \
     && pnpm install --frozen-lockfile \
     && pnpm --filter @multica/web build
 
@@ -46,8 +47,7 @@ COPY --from=builder --chown=nextjs:nodejs /src/apps/web/.next/static ./apps/web/
 COPY --from=builder --chown=nextjs:nodejs /src/apps/web/public ./apps/web/public
 COPY --chown=nextjs:nodejs ./entrypoint.web.sh /entrypoint.sh
 
-RUN ln -sf /config/runtime-config.js /app/apps/web/public/runtime-config.js \
-    && chmod 755 /entrypoint.sh \
+RUN chmod 755 /entrypoint.sh \
     && chown -R nextjs:nodejs /app /config
 
 USER nextjs
@@ -55,6 +55,6 @@ VOLUME ["/config"]
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1:3000/runtime-config.js | grep -q "__MULTICA_RUNTIME_CONFIG__" || exit 1
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1:3000/ | grep -q "Multica" || exit 1
 
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]

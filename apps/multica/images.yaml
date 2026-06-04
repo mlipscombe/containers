@@ -1,0 +1,8 @@
+---
+images:
+  - name: multica
+    target: image
+    tests: tests.yaml
+  - name: multica-web
+    target: image-web
+    tests: tests.web.yaml

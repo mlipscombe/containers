@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: Application Images
+description: Return the container image outputs for an application
+
+inputs:
+  app:
+    description: Application Name
+    required: true
+
+outputs:
+  images:
+    description: Container image outputs
+    value: ${{ steps.images.outputs.images }}
+  names:
+    description: Container image names
+    value: ${{ steps.images.outputs.names }}
+
+runs:
+  using: composite
+  steps:
+    - name: Application Images
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+      id: images
+      env:
+        APP: ${{ inputs.app }}
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          const app = process.env.APP;
+
+          function readConfiguredImages(app) {
+            const configPath = path.resolve(process.cwd(), 'apps', app, 'images.yaml');
+            if (!fs.existsSync(configPath)) {
+              return [{ name: app, target: 'image', tests: 'tests.yaml' }];
+            }
+
+            const { execFileSync } = require('child_process');
+            const config = JSON.parse(execFileSync('yq', ['--output-format=json', '.', configPath], { encoding: 'utf8' }));
+            if (!Array.isArray(config.images) || config.images.length === 0) {
+              throw new Error(`${configPath} must contain a non-empty images array`);
+            }
+
+            return config.images.map((image) => ({
+              name: image.name,
+              target: image.target || 'image',
+              tests: image.tests || 'tests.yaml',
+            }));
+          }
+
+          const images = readConfiguredImages(app);
+
+          for (const image of images) {
+            if (!image.name) {
+              throw new Error(`Every image in apps/${app}/images.yaml must include a name`);
+            }
+          }
+
+          core.setOutput('images', JSON.stringify(images));
+          core.setOutput('names', JSON.stringify(images.map((image) => image.name)));

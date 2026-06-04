@@ -1,5 +1,0 @@
-# This app needs repo-local source overlays during the image build.
-/*
-!entrypoint.sh
-!overrides/
-!overrides/**

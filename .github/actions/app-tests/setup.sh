@@ -2,8 +2,9 @@
 set -Eeuo pipefail
 
 APP="${1:?}"
+CONFIG="${2:?}"
 
-if yq --exit-status '.schemaVersion' "./apps/${APP}/tests.yaml" &>/dev/null; then
+if yq --exit-status '.schemaVersion' "./apps/${APP}/${CONFIG}" &>/dev/null; then
     gh release download --repo GoogleContainerTools/container-structure-test --pattern "*-linux-$(dpkg --print-architecture)" --output /usr/local/bin/container-structure-test
     chmod +x /usr/local/bin/container-structure-test
 else

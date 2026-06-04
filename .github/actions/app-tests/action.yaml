@@ -13,6 +13,10 @@ inputs:
   token:
     description: GitHub Token
     required: true
+  config:
+    description: Test config file relative to the app directory
+    required: false
+    default: tests.yaml
 
 runs:
   using: composite
@@ -27,9 +31,9 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
-        setup.sh "${{ inputs.app }}"
+        setup.sh "${{ inputs.app }}" "${{ inputs.config }}"
 
     - name: Run Tests
       shell: bash
       run: |
-        run.sh "${{ inputs.app }}" "${{ inputs.image }}"
+        run.sh "${{ inputs.app }}" "${{ inputs.image }}" "${{ inputs.config }}"

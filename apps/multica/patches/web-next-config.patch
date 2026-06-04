@@ -1,0 +1,14 @@
+diff --git a/apps/web/next.config.ts b/apps/web/next.config.ts
+--- a/apps/web/next.config.ts
++++ b/apps/web/next.config.ts
+@@ -27,7 +27,10 @@ const nextConfig: NextConfig = {
+   ...(allowedDevOrigins && allowedDevOrigins.length > 0
+     ? { allowedDevOrigins }
+     : {}),
++  experimental: {
++    proxyClientMaxBodySize: "1gb",
++  },
+   images: {
+     formats: ["image/avif", "image/webp"],
+     qualities: [75, 80, 85],
+   },

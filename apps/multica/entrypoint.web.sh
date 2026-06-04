@@ -19,29 +19,33 @@ if (remoteApiUrl) {
     ["/auth/:path*", "/auth/:path*"],
     ["/uploads/:path*", "/uploads/:path*"],
   ]);
+  const seen = new Set();
 
-  for (const rewrite of manifest.rewrites?.afterFiles || []) {
-    const destinationPath = backendRoutes.get(rewrite.source);
-    if (destinationPath) {
-      rewrite.destination = `${remoteApiUrl}${destinationPath}`;
+  const rewriteGroups = Array.isArray(manifest.rewrites)
+    ? { all: manifest.rewrites }
+    : manifest.rewrites || {};
+
+  for (const rewrites of Object.values(rewriteGroups)) {
+    if (!Array.isArray(rewrites)) continue;
+
+    for (const rewrite of rewrites) {
+      const destinationPath = backendRoutes.get(rewrite.source);
+      if (destinationPath) {
+        rewrite.destination = `${remoteApiUrl}${destinationPath}`;
+        seen.add(rewrite.source);
+      }
     }
+  }
+
+  const missing = [...backendRoutes.keys()].filter((source) => !seen.has(source));
+  if (missing.length > 0) {
+    throw new Error(
+      `Unable to apply REMOTE_API_URL: missing expected rewrite(s): ${missing.join(", ")}`,
+    );
   }
 
   fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 }
-EOF
-
-node - <<'EOF' > /config/runtime-config.js
-const config = {
-  googleClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
-  wsUrl: process.env.NEXT_PUBLIC_WS_URL || "",
-};
-
-process.stdout.write(
-  "window.__MULTICA_RUNTIME_CONFIG__ = Object.freeze(" +
-    JSON.stringify(config) +
-    ");\n",
-);
 EOF
 
 exec node apps/web/server.js

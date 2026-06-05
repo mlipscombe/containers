@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG BASE_IMAGE=vllm/vllm-openai
-ARG BASE_TAG=nightly
+ARG BASE_TAG=cu129-nightly
 FROM ${BASE_IMAGE}:${BASE_TAG}
 
 ARG VERSION

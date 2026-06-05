@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:12.9.2-cudnn-runtime-ubuntu24.04
+FROM docker.io/nvidia/cuda:13.3.0-cudnn-runtime-ubuntu24.04
 
 ARG VERSION
 

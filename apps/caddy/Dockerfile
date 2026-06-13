@@ -8,5 +8,6 @@ RUN xcaddy build \
     --with github.com/mholt/caddy-l4/modules/l4proxy \
     --with github.com/mholt/caddy-l4/modules/l4tls \
     --with github.com/mholt/caddy-l4/modules/l4proxyprotocol
+ARG VERSION
 FROM caddy:${VERSION}
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy

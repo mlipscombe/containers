@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=rhasspy/wyoming-faster-whisper
-  default = "v3.1.0"
+  default = "v3.5.0"
 }
 
 variable "SOURCE" {

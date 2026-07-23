@@ -6,7 +6,7 @@ variable "APP" {
 
 variable "VERSION" {
   // renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql versioning=loose
-  default = "18.4"
+  default = "19beta2-system-trixie"
 }
 
 variable "POSTGRES_VERSION" {

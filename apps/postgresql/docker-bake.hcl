@@ -19,7 +19,7 @@ variable "POSTGRES_MAJOR" {
 
 variable "PG_TEXTSEARCH_VERSION" {
   // renovate: datasource=github-releases depName=timescale/pg_textsearch
-  default = "1.3.0"
+  default = "1.3.1"
 }
 
 variable "SOURCE" {

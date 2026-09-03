@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG BASE_IMAGE=ghcr.io/cloudnative-pg/postgresql
-ARG POSTGRES_VERSION=18.4
+ARG POSTGRES_VERSION=18.6
 
 FROM docker.io/library/debian:trixie-slim AS pg-textsearch
 ARG TARGETARCH

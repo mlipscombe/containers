@@ -1,0 +1,26 @@
+---
+schemaVersion: "2.0.0"
+commandTests:
+  - name: patched PHP CLI and Moodle extensions
+    command: php
+    args:
+      - -r
+      - >-
+        if (PHP_VERSION_ID < 80427 || PHP_VERSION_ID >= 80500) { exit(1); }
+        if (in_array(false, array_map('extension_loaded', ['apcu', 'curl', 'dom',
+        'gd', 'intl', 'ldap', 'mbstring', 'mysqli', 'pgsql', 'redis', 'soap',
+        'sodium', 'xml', 'zip', 'Zend OPcache']), true)) { exit(1); }
+        echo "Patched Moodle PHP runtime\n";
+    expectedOutput: ["Patched Moodle PHP runtime"]
+  - name: Apache PHP module
+    command: env
+    args: ["APACHE_DOCUMENT_ROOT=/var/www/html", "apache2ctl", "-M"]
+    expectedOutput: ["php_module"]
+  - name: Apache configuration
+    command: env
+    args: ["APACHE_DOCUMENT_ROOT=/var/www/html", "apache2ctl", "-t"]
+    expectedError: ["Syntax OK"]
+metadataTest:
+  entrypoint: ["moodle-docker-php-entrypoint"]
+  cmd: ["apache2-foreground"]
+  exposedPorts: ["80"]

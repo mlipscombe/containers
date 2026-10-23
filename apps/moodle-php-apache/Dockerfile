@@ -2,7 +2,7 @@
 
 # Preserve Moodle's extensions and entrypoint while upstream images catch up
 # with the PHP security release. Patch releases share the PHP extension ABI.
-FROM moodlehq/moodle-php-apache:8.4@sha256:03ea311218d335f37a3bd705be20298effd5e930363c6f0dba595e84efcb5e91 AS moodle
+FROM moodlehq/moodle-php-apache:8.4@sha256:3e910075c08dc73c8e18732f5e80c8fb9a60ae72eaf52b1ee198bb510e4fd9d6 AS moodle
 
 FROM moodle AS builder
 ARG VERSION=8.4.27

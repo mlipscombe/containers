@@ -44,6 +44,12 @@
   },
   packageRules: [
     {
+      description: ["Keep PostgreSQL on the major supported by pg_textsearch binaries"],
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/cloudnative-pg/postgresql"],
+      allowedVersions: "/^18\\./",
+    },
+    {
       description: ["Release Rules for Application Updates"],
       addLabels: ["app/{{parentDir}}"],
       additionalBranchPrefix: "{{parentDir}}-",

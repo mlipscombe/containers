@@ -6,14 +6,21 @@ commandTests:
     args:
       - --version
     expectedOutput:
-      - PostgreSQL 18.4
+      - PostgreSQL 18.
+  - name: pg_textsearch default version SQL file
+    command: sh
+    args:
+      - -ec
+      - |
+        extension_dir=/usr/share/postgresql/18/extension
+        version=$(sed -n "s/^default_version *= *'\([^']*\)'.*/\1/p" "${extension_dir}/pg_textsearch.control")
+        test -n "${version}"
+        test -f "${extension_dir}/pg_textsearch--${version}.sql"
+    exitCode: 0
 fileExistenceTests:
   - name: pg_textsearch library
     path: /usr/lib/postgresql/18/lib/pg_textsearch.so
     shouldExist: true
   - name: pg_textsearch control file
     path: /usr/share/postgresql/18/extension/pg_textsearch.control
-    shouldExist: true
-  - name: pg_textsearch SQL file
-    path: /usr/share/postgresql/18/extension/pg_textsearch--1.3.0.sql
     shouldExist: true

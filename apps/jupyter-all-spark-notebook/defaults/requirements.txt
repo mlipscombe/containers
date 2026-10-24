@@ -1,15 +1,17 @@
-# renovate: allowedVersions=">=4.1.0 <5.0.0a0"
-jupyterlab>=4.1.0,<5.0.0a0
+# Notebook 7.5 in the base image requires JupyterLab >=4.5,<4.6.
+# renovate: allowedVersions=">=4.5.0 <4.6.0"
+jupyterlab>=4.5.0,<4.6.0
 
 # renovate: allowedVersions=">=0.17.0 <0.18.0"
-jedi<0.18.0,>=0.17.0
+jedi<0.20.2,>=0.20.1
 
 # renovate: allowedVersions=">=3.5.6 <4.0.0"
 pyspark<4.0.0,>=3.5.6
 
 findspark
 networkx
-numpy
+# Numba 0.62 in the base image requires NumPy <2.4.
+numpy<2.4
 gensim
 pandas
 beautifulsoup4

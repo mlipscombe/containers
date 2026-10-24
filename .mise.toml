@@ -8,7 +8,7 @@ container-structure-test = "latest"
 [hooks]
 postinstall = [
   "mkdir -p {{config_root}}/.bin/goss",
-  "gh release download --repo goss-org/goss --skip-existing --pattern *-linux-amd64 --output {{config_root}}/.bin/goss/goss",
-  "gh release download --repo goss-org/goss --skip-existing --pattern dgoss --output {{config_root}}/.bin/goss/dgoss",
+  "gh release download v0.4.10 --repo goss-org/goss --pattern goss_0.4.10_linux_$(uname -m | sed 's/aarch64/arm64/').tar.gz --output - | tar -xz -C {{config_root}}/.bin/goss goss",
+  "gh release download v0.4.10 --repo goss-org/goss --clobber --pattern dgoss --output {{config_root}}/.bin/goss/dgoss",
   "chmod +x {{config_root}}/.bin/goss/{goss,dgoss}",
 ]

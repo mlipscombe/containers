@@ -20,8 +20,8 @@ RUN \
 RUN \
     set -eux; \
     case "${TARGETARCH}" in \
-        amd64) sha256="4a8291b44c2c700ef71f9230e14fbe434dc0f8b20bca13eb31b049367911de38" ;; \
-        arm64) sha256="9590a2c604372d6ff05a8012ffd8f2a0caa74a8a6c81917ea5d12f3d0dad6ec6" ;; \
+        amd64) sha256="6adc4c390c61109af337c5d5c15239623d6fc8b89e972625de04f52a5771cebf" ;; \
+        arm64) sha256="54843473cbad144812be0437bc708233087c7823018700ffb99a2fb92d1466bb" ;; \
         *) echo "unsupported architecture: ${TARGETARCH}" >&2; exit 1 ;; \
     esac; \
     artifact="pg-textsearch-v${PG_TEXTSEARCH_VERSION}-pg${PG_MAJOR}-${TARGETARCH}.zip"; \

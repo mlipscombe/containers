@@ -33,6 +33,6 @@ USER $NB_UID
 RUN python -m pip install --upgrade pip
 
 COPY ./defaults/requirements.txt /
-RUN pip install --upgrade -r /requirements.txt
+RUN pip install --upgrade -r /requirements.txt && pip check
 
 COPY ./defaults/config/ /home/$NB_USER/.jupyter/

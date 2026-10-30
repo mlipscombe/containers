@@ -10,7 +10,7 @@ variable "WEB_APP" {
 
 variable "VERSION" {
   // renovate: datasource=github-releases depName=multica-ai/multica
-  default = "v0.7.1"
+  default = "v0.7.2"
 }
 
 variable "SOURCE" {

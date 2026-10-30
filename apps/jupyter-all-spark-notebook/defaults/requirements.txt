@@ -11,7 +11,7 @@ pyspark<4.3.0,>=4.2.0
 findspark
 networkx
 # Numba 0.62 in the base image requires NumPy <2.4.
-numpy<2.4
+numpy<2.6
 gensim
 pandas
 beautifulsoup4
